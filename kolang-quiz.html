@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>기자가 알아야 할 올바른 우리말 테스트</title>
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <script type="application/json" id="uc-bank-json">
+[{"wrong":["유명세를 탔다","떨쳤다","누렸다","얻었다"],"right":["유명세를 치렀다","유명세가 따랐다","명성을 얻었다"],"explain":"‘유명세’는 이름이 알려져 겪는 불편이나 곤욕을 뜻한다."},{"wrong":["금도를 넘었다","금도를 지켜라"],"right":["선을 넘었다","도를 넘었다","선을 지켜라"],"explain":"‘금도’는 포용할 만한 도량을 뜻한다."},{"wrong":["국가 안위가 위태롭다","안위를 도모한다"],"right":["안전","안녕","보위 등으로 고쳐 쓴다"],"explain":"‘안위’는 편안함과 위태함을 함께 이르는 말이다."},{"wrong":["존망이 위태롭다"],"right":["존속이 위태롭다"],"explain":"‘존망’은 존속과 멸망을 아울러 이른다."},{"wrong":["생사가 위태롭다"],"right":["목숨이 위태롭다","생사의 갈림길에 섰다"],"explain":"‘생사’는 삶과 죽음을 아울러 이른다."},{"wrong":["애환을 달래다","치유하다"],"right":["슬픔을 달래다","시름을 덜다","아픔을 위로하다"],"explain":"‘애환’은 슬픔과 기쁨을 함께 이르는 말이다."},{"wrong":["접수했다","접수시켰다"],"right":["제출했다","제출하게 했다"],"explain":"접수는 받는 쪽, 제출은 내는 쪽 표현이다."},{"wrong":["수납했다"],"right":["납부했다"],"explain":"수납은 받는 행위, 납부는 내는 행위다."},{"wrong":["임대료를 냈다"],"right":["임차료를 냈다"],"explain":"빌리는 쪽은 임차료를 낸다."},{"wrong":["난이도가 높다","고난이도"],"right":["난도가 높다","고난도"],"explain":"‘난이도’는 어려움과 쉬움의 정도를 함께 이르는 말이다."},{"wrong":["사사를 받았다"],"right":["사사했다"],"explain":"‘사사하다’는 스승으로 삼아 배운다는 뜻이다."},{"wrong":["자문을 구했다","자문을 받았다"],"right":["자문했다"],"explain":"자문은 묻는 행위다."},{"wrong":["사열을 받았다"],"right":["사열했다"],"explain":"사열은 부대나 의장대를 살펴보는 것이다."},{"wrong":["진위 여부"],"right":["진위"],"explain":"진위에 이미 참과 거짓의 뜻이 들어 있다."},{"wrong":["생사 여부"],"right":["생존 여부","사망 여부"],"explain":"생사에 이미 상반된 두 개념이 함께 들어 있다."},{"wrong":["피로회복"],"right":["피로해소"],"explain":"피로를 회복한다고 하지 않는다."},{"wrong":["대첩이 벌어진다"],"right":["대결이 벌어진다","대전이 벌어진다"],"explain":"대첩은 이미 크게 이긴 뒤를 뜻한다."},{"wrong":["3당 등극","2대 주주 등극","8위 등극"],"right":["3당에 올랐다","2대 주주가 됐다","8위에 올랐다"],"explain":"‘등극’은 가장 높은 자리에 오를 때 쓰는 말이다."}]
+  </script>
+  <style>
+    #unique-content-991201,
+    #unique-content-991201 * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    #unique-content-991201 {
+      --yellow: #facc15;
+      --black: #000000;
+      --white: #ffffff;
+      --green-a11y: #15803d;
+      --shadow: 12px 12px 0 var(--yellow);
+      --border: 4px solid var(--black);
+      --ease: cubic-bezier(0.65, 0, 0.35, 1);
+      font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      min-height: 100dvh;
+      padding: clamp(0.85rem, 3vw, 1.25rem);
+      padding-bottom: clamp(2rem, 5vw, 3rem);
+      position: relative;
+      overflow-x: hidden;
+    }
+    #unique-content-991201.uc-shake {
+      animation: uc-quiz-shake 0.65s var(--ease) both;
+    }
+    @keyframes uc-quiz-shake {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-10px, 6px) rotate(-0.6deg); }
+      22% { transform: translate(12px, -5px) rotate(0.5deg); }
+      35% { transform: translate(-9px, 7px) rotate(-0.4deg); }
+      48% { transform: translate(10px, -6px); }
+      60% { transform: translate(-7px, 4px); }
+      72% { transform: translate(6px, -3px); }
+      85% { transform: translate(-4px, 2px); }
+    }
+    #unique-content-991201 .uc-inner {
+      max-width: 36rem;
+      margin: 0 auto;
+    }
+    #unique-content-991201 .uc-mast {
+      margin-bottom: 1rem;
+    }
+    #unique-content-991201 .uc-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 1rem;
+      font-weight: 800;
+      font-size: 0.82rem;
+      text-decoration: none;
+      color: var(--black);
+      border: var(--border);
+      box-shadow: 8px 8px 0 var(--yellow);
+      background: var(--white);
+      transition: transform 0.8s var(--ease), box-shadow 0.8s var(--ease);
+    }
+    #unique-content-991201 .uc-back:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 12px 12px 0 var(--yellow);
+    }
+    #unique-content-991201 .uc-back:focus-visible {
+      outline: 3px solid var(--green-a11y);
+      outline-offset: 3px;
+    }
+    #unique-content-991201 .uc-badge {
+      display: inline-block;
+      margin: 0 0 0.5rem;
+      padding: 0.25rem 0.55rem;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--yellow);
+      border: 3px solid var(--black);
+    }
+    #unique-content-991201 .uc-title {
+      margin: 0;
+      font-size: clamp(1.35rem, 1.1rem + 1.8vw, 1.85rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    #unique-content-991201 .uc-lead {
+      margin: 0.65rem 0 0;
+      font-weight: 600;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      opacity: 0.9;
+    }
+    #unique-content-991201 .uc-card {
+      margin-top: 1.25rem;
+      padding: clamp(1.1rem, 3vw, 1.5rem);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      background: var(--white);
+    }
+    #unique-content-991201 .uc-btn {
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.35rem;
+      border: var(--border);
+      cursor: pointer;
+      background: var(--white);
+      box-shadow: 8px 8px 0 var(--yellow);
+      transition: transform 0.8s var(--ease), box-shadow 0.8s var(--ease), background 0.35s ease;
+    }
+    #unique-content-991201 .uc-btn:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 12px 12px 0 var(--yellow);
+      background: var(--yellow);
+    }
+    #unique-content-991201 .uc-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 5px 5px 0 var(--yellow);
+    }
+    #unique-content-991201 .uc-btn:focus-visible {
+      outline: 3px solid var(--green-a11y);
+      outline-offset: 3px;
+    }
+    #unique-content-991201 .uc-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 6px 6px 0 var(--yellow);
+    }
+    #unique-content-991201 .uc-ox-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    #unique-content-991201 .uc-ox-o {
+      background: var(--yellow);
+    }
+    #unique-content-991201 .uc-ox-x {
+      background: var(--white);
+    }
+    #unique-content-991201 .uc-ox-hint {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      opacity: 0.75;
+      line-height: 1.45;
+    }
+    #unique-content-991201 .uc-progress-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem 1rem;
+      margin-bottom: 0.65rem;
+    }
+    #unique-content-991201 .uc-progress {
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      margin: 0;
+    }
+    #unique-content-991201 .uc-score-live {
+      margin: 0;
+      padding: 0.35rem 0.65rem;
+      font-weight: 900;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      border: 3px solid var(--black);
+      background: var(--yellow);
+      box-shadow: 4px 4px 0 var(--black);
+      font-variant-numeric: tabular-nums;
+    }
+    #unique-content-991201 .uc-prompt {
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin: 0 0 0.75rem;
+    }
+    #unique-content-991201 .uc-phrase {
+      margin: 0;
+      padding: 1rem 1.1rem;
+      font-size: clamp(1.05rem, 0.95rem + 0.6vw, 1.35rem);
+      font-weight: 900;
+      line-height: 1.45;
+      border: var(--border);
+      background: var(--white);
+      min-height: 4.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    #unique-content-991201 .uc-feedback {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: var(--border);
+      background: var(--yellow);
+      font-weight: 700;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      display: none;
+    }
+    #unique-content-991201 .uc-feedback.uc-on {
+      display: block;
+    }
+    #unique-content-991201 .uc-feedback h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #unique-content-991201 .uc-feedback p {
+      margin: 0;
+    }
+    #unique-content-991201 .uc-next {
+      margin-top: 0.85rem;
+      width: 100%;
+    }
+    #unique-content-991201 .uc-hidden {
+      display: none !important;
+    }
+    #unique-content-991201 .uc-result-score {
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 900;
+      margin: 0.25rem 0 0.5rem;
+    }
+    #unique-content-991201 .uc-result-msg {
+      font-weight: 800;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin: 0 0 1rem;
+    }
+    #unique-content-991201 #uc-fw-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      display: none;
+    }
+    #unique-content-991201 #uc-fw-layer.uc-on {
+      display: block;
+    }
+    #unique-content-991201 #uc-fw-canvas-inner {
+      width: 100%;
+      height: 100%;
+      display: block;
+      vertical-align: top;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #unique-content-991201.uc-shake { animation: none; }
+      #unique-content-991201 .uc-btn,
+      #unique-content-991201 .uc-back { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="unique-content-991201">
+    <div id="uc-fw-layer" aria-hidden="true"><canvas id="uc-fw-canvas-inner"></canvas></div>
+
+    <div class="uc-inner">
+      <div class="uc-mast">
+        <a class="uc-back" href="index.html">← Lab</a>
+      </div>
+
+      <span class="uc-badge">기자 교육 · 우리말</span>
+      <h1 class="uc-title">기자가 알아야 할<br />올바른 우리말 테스트</h1>
+      <p class="uc-lead">기사·브리핑에서 자주 섞어 쓰는 표현을 골라 냈습니다. 제시되는 <strong>한 문장</strong>만 보고, 기사에 그대로 써도 되는 말이면 <strong>○</strong>, 고쳐 써야 하면 <strong>×</strong>를 눌러 주세요. 총 <strong>10문항</strong>입니다.</p>
+
+      <section id="uc-screen-intro" class="uc-card" aria-labelledby="uc-intro-heading">
+        <h2 id="uc-intro-heading" class="uc-prompt">준비되셨나요?</h2>
+        <p class="uc-lead" style="margin-top:0">문항은 <strong>무작위 10개</strong>입니다. 각 문항마다 잘못 쓴 예 또는 바로잡은 예 가운데 하나가 임의로 나옵니다.</p>
+        <button type="button" class="uc-btn" id="uc-start" style="margin-top:1rem">테스트 시작</button>
+      </section>
+
+      <section id="uc-screen-quiz" class="uc-card uc-hidden" aria-live="polite">
+        <div class="uc-progress-row">
+          <p class="uc-progress" id="uc-progress">문항 1 / 10</p>
+          <p class="uc-score-live" id="uc-score-live" aria-live="polite">누적 0점</p>
+        </div>
+        <p class="uc-prompt">이 표현은 기사에 그대로 써도 될까요?</p>
+        <p class="uc-phrase" id="uc-phrase"></p>
+        <div class="uc-ox-row">
+          <button type="button" class="uc-btn uc-ox-o" id="uc-pick-o" aria-label="옳은 표현이다">○ 예, 올바른 표현</button>
+          <button type="button" class="uc-btn uc-ox-x" id="uc-pick-x" aria-label="잘못된 표현이다">× 아니요, 고쳐 써야 함</button>
+        </div>
+        <p class="uc-ox-hint">○ = 기사에 써도 되는 말 · × = 틀렸거나 어색한 말</p>
+        <div class="uc-feedback" id="uc-feedback" role="status">
+          <h3 id="uc-result-label"></h3>
+          <p id="uc-explain"></p>
+          <button type="button" class="uc-btn uc-next" id="uc-next">다음 문항</button>
+        </div>
+      </section>
+
+      <section id="uc-screen-result" class="uc-card uc-hidden" aria-labelledby="uc-result-heading">
+        <h2 id="uc-result-heading" class="uc-prompt">채점 결과</h2>
+        <p class="uc-result-score" id="uc-score-line"></p>
+        <p class="uc-result-msg" id="uc-tier-msg"></p>
+        <button type="button" class="uc-btn" id="uc-retry">다시 풀기</button>
+      </section>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  "use strict";
+
+  var ROOT = document.getElementById("unique-content-991201");
+  var bankEl = document.getElementById("uc-bank-json");
+  if (!ROOT || !bankEl) return;
+
+  var BANK = JSON.parse(bankEl.textContent);
+  var TOTAL = 10;
+
+  var elIntro = ROOT.querySelector("#uc-screen-intro");
+  var elQuiz = ROOT.querySelector("#uc-screen-quiz");
+  var elResult = ROOT.querySelector("#uc-screen-result");
+  var elPhrase = ROOT.querySelector("#uc-phrase");
+  var elProgress = ROOT.querySelector("#uc-progress");
+  var elScoreLive = ROOT.querySelector("#uc-score-live");
+  var elFeedback = ROOT.querySelector("#uc-feedback");
+  var elResultLabel = ROOT.querySelector("#uc-result-label");
+  var elExplain = ROOT.querySelector("#uc-explain");
+  var elNext = ROOT.querySelector("#uc-next");
+  var btnO = ROOT.querySelector("#uc-pick-o");
+  var btnX = ROOT.querySelector("#uc-pick-x");
+  var elScoreLine = ROOT.querySelector("#uc-score-line");
+  var elTierMsg = ROOT.querySelector("#uc-tier-msg");
+  var fwLayer = ROOT.querySelector("#uc-fw-layer");
+  var fwCanvas = ROOT.querySelector("#uc-fw-canvas-inner");
+
+  var queue = [];
+  var index = 0;
+  var score = 0;
+  var locked = false;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function pickPhrase(row) {
+    var useRight = Math.random() < 0.5;
+    var pool = useRight ? row.right : row.wrong;
+    var phrase = pool[Math.floor(Math.random() * pool.length)];
+    var isRightPhrase = useRight;
+    return { phrase: phrase, answerIsO: isRightPhrase, explain: row.explain };
+  }
+
+  function buildQueue() {
+    var rows = shuffle(BANK).slice(0, TOTAL);
+    return rows.map(pickPhrase);
+  }
+
+  function tierMessage(s) {
+    if (s <= 3) return "당신은 우리말 연습이 반드시 필요한 기자예요!";
+    if (s <= 7) return "틈틈히 우리말 공부를 해보아요~!";
+    return "당신은 우리말 달인입니다";
+  }
+
+  function showIntro() {
+    elIntro.classList.remove("uc-hidden");
+    elQuiz.classList.add("uc-hidden");
+    elResult.classList.add("uc-hidden");
+  }
+
+  function showQuiz() {
+    elIntro.classList.add("uc-hidden");
+    elQuiz.classList.remove("uc-hidden");
+    elResult.classList.add("uc-hidden");
+  }
+
+  function showResult() {
+    elIntro.classList.add("uc-hidden");
+    elQuiz.classList.add("uc-hidden");
+    elResult.classList.remove("uc-hidden");
+    elScoreLine.textContent = score + " / " + TOTAL + "점";
+    elTierMsg.textContent = tierMessage(score);
+  }
+
+  function updateLiveScore(mode) {
+    if (!elScoreLive) return;
+    if (mode === "feedback") {
+      elScoreLive.textContent = "누적 " + score + "점 · " + (index + 1) + "문항 반영";
+      return;
+    }
+    if (index === 0) {
+      elScoreLive.textContent = "누적 0점 · 첫 문항";
+    } else {
+      elScoreLive.textContent = "누적 " + score + "점 · " + index + "문항까지 반영";
+    }
+  }
+
+  function renderQuestion() {
+    var q = queue[index];
+    elProgress.textContent = "문항 " + (index + 1) + " / " + TOTAL;
+    elPhrase.textContent = q.phrase;
+    elFeedback.classList.remove("uc-on");
+    btnO.disabled = false;
+    btnX.disabled = false;
+    locked = false;
+    updateLiveScore("question");
+  }
+
+  function runFireworks() {
+    if (reduceMotion) return;
+    var canvas = fwCanvas;
+    var layer = fwLayer;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    var colors = ["#facc15", "#000000", "#ffffff"];
+    var bursts = [];
+    var i;
+    var b;
+    for (b = 0; b < 5; b++) {
+      var cx = w * (0.2 + Math.random() * 0.6);
+      var cy = h * (0.2 + Math.random() * 0.45);
+      for (i = 0; i < 42; i++) {
+        var ang = (Math.PI * 2 * i) / 42 + Math.random() * 0.4;
+        var sp = 6 + Math.random() * 10;
+        bursts.push({
+          x: cx,
+          y: cy,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp - 4,
+          g: 0.22 + Math.random() * 0.12,
+          life: 1,
+          c: colors[i % colors.length],
+          sz: 4 + Math.random() * 5,
+          rot: Math.random() * Math.PI
+        });
+      }
+    }
+
+    layer.classList.add("uc-on");
+    var start = performance.now();
+    var dur = 2200;
+
+    function frame(now) {
+      ctx.clearRect(0, 0, w, h);
+      var alive = false;
+      bursts.forEach(function (p) {
+        if (p.life <= 0) return;
+        alive = true;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.g;
+        p.life -= 0.014;
+        p.rot += 0.09;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c;
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.rect(-p.sz / 2, -p.sz / 2, p.sz, p.sz * 0.55);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      });
+      if (alive && now - start < dur) {
+        requestAnimationFrame(frame);
+      } else {
+        layer.classList.remove("uc-on");
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function onAnswer(pickedO) {
+    if (locked) return;
+    locked = true;
+    btnO.disabled = true;
+    btnX.disabled = true;
+
+    var q = queue[index];
+    var correct = pickedO === q.answerIsO;
+    if (correct) score++;
+
+    elResultLabel.textContent = correct ? "정답!" : "오답";
+    elExplain.textContent = q.explain;
+    elFeedback.classList.add("uc-on");
+
+    if (correct) {
+      runFireworks();
+    } else {
+      ROOT.classList.remove("uc-shake");
+      void ROOT.offsetWidth;
+      ROOT.classList.add("uc-shake");
+      setTimeout(function () {
+        ROOT.classList.remove("uc-shake");
+      }, 700);
+    }
+
+    if (index >= TOTAL - 1) {
+      elNext.textContent = "결과 보기";
+    } else {
+      elNext.textContent = "다음 문항";
+    }
+    updateLiveScore("feedback");
+  }
+
+  function onNext() {
+    if (index >= TOTAL - 1) {
+      showResult();
+      return;
+    }
+    index++;
+    renderQuestion();
+  }
+
+  ROOT.querySelector("#uc-start").addEventListener("click", function () {
+    queue = buildQueue();
+    index = 0;
+    score = 0;
+    showQuiz();
+    renderQuestion();
+  });
+
+  btnO.addEventListener("click", function () {
+    onAnswer(true);
+  });
+  btnX.addEventListener("click", function () {
+    onAnswer(false);
+  });
+  elNext.addEventListener("click", onNext);
+
+  ROOT.querySelector("#uc-retry").addEventListener("click", function () {
+    showIntro();
+  });
+})();
+  </script>
+</body>
+</html>
