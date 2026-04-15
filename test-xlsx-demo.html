@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>test.xlsx — 표 · 차트 연동 데모</title>
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    #unique-content-572901,
+    #unique-content-572901 * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    #unique-content-572901 {
+      --yellow: #facc15;
+      --black: #000000;
+      --white: #ffffff;
+      --green-a11y: #15803d;
+      --shadow: 12px 12px 0 var(--yellow);
+      --border: 4px solid var(--black);
+      --ease-ui: cubic-bezier(0.65, 0, 0.35, 1);
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.5;
+      font-size: clamp(0.875rem, 0.82rem + 0.2vw, 0.95rem);
+      padding: clamp(0.75rem, 3vw, 1.25rem);
+      padding-bottom: clamp(2rem, 5vw, 3rem);
+    }
+    #unique-content-572901 .uc-mast {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: clamp(1rem, 3vw, 1.5rem);
+    }
+    #unique-content-572901 .uc-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-decoration: none;
+      color: var(--black);
+      background: var(--white);
+      border: var(--border);
+      box-shadow: 10px 10px 0 var(--yellow);
+      transition: transform 0.8s var(--ease-ui), box-shadow 0.8s var(--ease-ui), background 0.35s ease;
+    }
+    #unique-content-572901 .uc-back:hover,
+    #unique-content-572901 .uc-back:focus-visible {
+      transform: translate(-4px, -4px);
+      box-shadow: 14px 14px 0 var(--yellow);
+      background: var(--yellow);
+      outline: none;
+    }
+    #unique-content-572901 .uc-back:active {
+      transform: translate(3px, 3px);
+      box-shadow: 6px 6px 0 var(--yellow);
+    }
+    #unique-content-572901 .uc-back:focus-visible {
+      outline: 3px solid var(--green-a11y);
+      outline-offset: 3px;
+    }
+    #unique-content-572901 .uc-back-ico {
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      border: 3px solid var(--black);
+      background: var(--black);
+      color: var(--yellow);
+      font-weight: 900;
+    }
+    #unique-content-572901 .uc-back:hover .uc-back-ico,
+    #unique-content-572901 .uc-back:focus-visible .uc-back-ico {
+      background: var(--white);
+      color: var(--black);
+    }
+    #unique-content-572901 .uc-inner {
+      max-width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+    #unique-content-572901 .uc-kicker {
+      margin: 0 0 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    #unique-content-572901 .uc-title {
+      margin: 0;
+      font-size: clamp(1.35rem, 1.05rem + 1.5vw, 1.95rem);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.12;
+    }
+    #unique-content-572901 .uc-title em {
+      font-style: normal;
+      background: var(--yellow);
+      border: 3px solid var(--black);
+      padding: 0.05em 0.35em;
+      box-shadow: 6px 6px 0 var(--black);
+    }
+    #unique-content-572901 .uc-sub {
+      margin: 0.75rem 0 0;
+      max-width: 40rem;
+      font-weight: 600;
+      opacity: 0.88;
+      line-height: 1.6;
+    }
+    #unique-content-572901 .uc-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.55rem 0.65rem;
+      margin: clamp(1rem, 2.5vw, 1.35rem) 0;
+    }
+    #unique-content-572901 .uc-btn {
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 900;
+      padding: 0.55rem 1.15rem;
+      border: var(--border);
+      background: var(--white);
+      color: var(--black);
+      cursor: pointer;
+      box-shadow: 8px 8px 0 var(--yellow);
+      transition: transform 0.8s var(--ease-ui), box-shadow 0.8s var(--ease-ui), background 0.35s ease, color 0.35s ease;
+    }
+    #unique-content-572901 .uc-btn:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 12px 12px 0 var(--yellow);
+      background: var(--yellow);
+    }
+    #unique-content-572901 .uc-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 5px 5px 0 var(--yellow);
+    }
+    #unique-content-572901 .uc-btn:focus-visible {
+      outline: 3px solid var(--green-a11y);
+      outline-offset: 3px;
+    }
+    #unique-content-572901 .uc-btn--primary {
+      background: var(--black);
+      color: var(--yellow);
+    }
+    #unique-content-572901 .uc-btn--primary:hover {
+      background: var(--yellow);
+      color: var(--black);
+    }
+    #unique-content-572901 .uc-pill {
+      flex: 1 1 100%;
+      padding: 0.55rem 1rem;
+      border: var(--border);
+      background: var(--white);
+      box-shadow: 8px 8px 0 var(--yellow);
+      font-weight: 800;
+      font-size: 0.78rem;
+      font-variant-numeric: tabular-nums;
+    }
+    @media (min-width: 700px) {
+      #unique-content-572901 .uc-pill { flex: 1 1 auto; min-width: 14rem; }
+    }
+    #unique-content-572901 .uc-pill strong {
+      margin-right: 0.35rem;
+    }
+    #unique-content-572901 .uc-layout {
+      display: grid;
+      gap: clamp(1rem, 2.5vw, 1.35rem);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 980px) {
+      #unique-content-572901 .uc-layout {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        align-items: start;
+      }
+      #unique-content-572901 .uc-layout .uc-charts { grid-column: 1 / -1; }
+    }
+    #unique-content-572901 .uc-panel {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    #unique-content-572901 .uc-panel-title {
+      margin: 0;
+      padding: 0.65rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--yellow);
+      border-bottom: var(--border);
+    }
+    #unique-content-572901 .uc-scroll {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      max-height: min(56vh, 420px);
+    }
+    @media (min-width: 980px) {
+      #unique-content-572901 .uc-scroll { max-height: min(62vh, 500px); }
+    }
+    #unique-content-572901 table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(0.68rem, 0.64rem + 0.15vw, 0.78rem);
+    }
+    #unique-content-572901 th,
+    #unique-content-572901 td {
+      padding: 0.55rem 0.55rem;
+      text-align: right;
+      border-bottom: 3px solid var(--black);
+      vertical-align: middle;
+    }
+    #unique-content-572901 th:first-child,
+    #unique-content-572901 td:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: var(--white);
+      box-shadow: 6px 0 0 var(--white);
+    }
+    #unique-content-572901 thead th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: var(--black);
+      color: var(--yellow);
+      font-weight: 900;
+      border-bottom: 4px solid var(--black);
+      white-space: nowrap;
+    }
+    #unique-content-572901 thead th:first-child {
+      background: var(--black);
+      box-shadow: 6px 0 0 var(--black);
+    }
+    #unique-content-572901 tbody tr {
+      cursor: pointer;
+      transition: background 0.8s var(--ease-ui), box-shadow 0.8s var(--ease-ui), transform 0.35s ease;
+    }
+    #unique-content-572901 tbody tr:nth-child(even) {
+      background: var(--white);
+    }
+    #unique-content-572901 tbody tr:hover {
+      background: var(--yellow);
+    }
+    #unique-content-572901 tbody tr.uc-sel {
+      background: var(--yellow);
+      box-shadow: inset 5px 0 0 var(--black);
+    }
+    #unique-content-572901 tbody tr.uc-dim {
+      opacity: 0.35;
+    }
+    #unique-content-572901 tbody td:first-child {
+      font-weight: 800;
+      max-width: 42vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @media (min-width: 640px) {
+      #unique-content-572901 tbody td:first-child { max-width: 15rem; }
+    }
+    #unique-content-572901 .uc-mono {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    #unique-content-572901 .uc-charts {
+      display: grid;
+      gap: clamp(0.85rem, 2vw, 1.1rem);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 600px) {
+      #unique-content-572901 .uc-charts { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 980px) {
+      #unique-content-572901 .uc-charts { grid-template-columns: 1fr 1.12fr; }
+    }
+    #unique-content-572901 .uc-chart {
+      border: var(--border);
+      box-shadow: 10px 10px 0 var(--yellow);
+      background: var(--white);
+      padding: clamp(0.75rem, 2vw, 1rem);
+    }
+    #unique-content-572901 .uc-chart h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    #unique-content-572901 .uc-canvas-wrap {
+      width: 100%;
+      min-height: 200px;
+    }
+    #unique-content-572901 .uc-canvas-wrap canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    #unique-content-572901 .uc-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.5rem;
+      margin-top: 0.55rem;
+      font-size: clamp(0.58rem, 0.54rem + 0.12vw, 0.66rem);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    #unique-content-572901 .uc-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.4rem;
+      border: 3px solid var(--black);
+      background: var(--white);
+    }
+    #unique-content-572901 .uc-swatch {
+      width: 0.5rem;
+      height: 0.5rem;
+      border: 2px solid var(--black);
+      flex-shrink: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #unique-content-572901 .uc-back,
+      #unique-content-572901 .uc-btn,
+      #unique-content-572901 tbody tr { transition: none; }
+      #unique-content-572901 .uc-back:hover,
+      #unique-content-572901 .uc-btn:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="unique-content-572901">
+    <div class="uc-mast">
+      <a class="uc-back" href="index.html"><span class="uc-back-ico" aria-hidden="true">←</span> Lab</a>
+    </div>
+
+    <div class="uc-inner">
+      <header>
+        <p class="uc-kicker">Interactive</p>
+        <h1 class="uc-title"><em>test.xlsx</em> — 표 · 도넛 · 바</h1>
+        <p class="uc-sub">행을 누르면 비율(보지 않았다 ~ 5일)이 차트에 반영됩니다. Shift 범위, Ctrl/Cmd 다중 선택 시 값은 평균됩니다. 차트 수치는 0.8초 이징으로 움직입니다.</p>
+      </header>
+
+      <div class="uc-toolbar">
+        <button type="button" class="uc-btn uc-btn--primary" id="uc-btn-all">전체 선택</button>
+        <button type="button" class="uc-btn" id="uc-btn-clear">선택 해제</button>
+        <div class="uc-pill" id="uc-selection"><strong>선택</strong> 전체 ■</div>
+      </div>
+
+      <div class="uc-layout">
+        <div class="uc-panel">
+          <h2 class="uc-panel-title">데이터</h2>
+          <div class="uc-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>사례수</th>
+                  <th>보지 않았다</th>
+                  <th>1일</th>
+                  <th>2일</th>
+                  <th>3일</th>
+                  <th>4일</th>
+                  <th>5일</th>
+                </tr>
+              </thead>
+              <tbody id="uc-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="uc-panel uc-charts">
+          <div class="uc-chart">
+            <h3>도넛</h3>
+            <div class="uc-canvas-wrap" id="uc-pie-wrap">
+              <canvas id="uc-pie" width="400" height="256" aria-label="응답 비율 도넛"></canvas>
+            </div>
+            <div class="uc-legend" id="uc-legend"></div>
+          </div>
+          <div class="uc-chart">
+            <h3>막대</h3>
+            <div class="uc-canvas-wrap" id="uc-bar-wrap">
+              <canvas id="uc-bar" width="400" height="256" aria-label="응답 비율 막대"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  "use strict";
+
+  var ROOT = document.getElementById("unique-content-572901");
+  if (!ROOT) return;
+
+  var LABELS = ["보지 않았다", "1일", "2일", "3일", "4일", "5일"];
+  var COLORS = ["#000000", "#facc15", "#ffffff", "#facc15", "#000000", "#ffffff"];
+  var BLACK = "#000000";
+  var YELLOW = "#facc15";
+  var WHITE = "#ffffff";
+
+  var RAW = [
+    ["■ 전      체 ■", null, "(2674)", 6.8035446305, 2.9502338578, 4.1585590696, 12.5425147711, 10.9958875392, 62.5492601319, 100, "(4.06)", "(1.51)"],
+    ["성별", "남자", "(1364)", 8.7663983192, 2.8732850474, 4.3353974577, 12.1058060915, 10.0943965297, 61.8247165545, 100, "(3.97)", "(1.60)"],
+    [null, "여자", "(1310)", 4.7602052768, 3.030337909, 3.9744695271, 12.9971304341, 11.934343659, 63.303513194, 100, "(4.14)", "(1.39)"],
+    ["학교급", "초등학교", "(911)", 9.8732535225, 4.5291271031, 6.5100965604, 18.9877854223, 13.4748127203, 46.6249246714, 100, "(3.62)", "(1.66)"],
+    [null, "중학교", "(887)", 5.1820814789, 2.4515621649, 2.611181311, 11.2608426398, 9.137238815, 69.3570935904, 100, "(4.25)", "(1.38)"],
+    [null, "고등학교", "(876)", 5.2530115425, 1.8131905302, 3.2798757566, 7.137493786, 10.2999064642, 72.2165219205, 100, "(4.32)", "(1.35)"],
+    ["지역", "서울", "(402)", 8.6056269529, 2.6268768815, 4.7853305429, 11.7282928555, 10.2585751618, 61.9952976053, 100, "(3.98)", "(1.60)"],
+    [null, "인천/경기", "(931)", 7.6125510088, 3.5833429095, 3.5700665452, 12.9778865027, 11.6386334434, 60.6175195905, 100, "(3.99)", "(1.56)"],
+    [null, "대전/세종/충청", "(314)", 4.3662498511, 2.3296678992, 3.7428534354, 12.5461120917, 13.0521473091, 63.9629694135, 100, "(4.19)", "(1.34)"],
+    [null, "광주/전라", "(268)", 5.0789584221, 2.6332321499, 2.952535753, 11.5256159226, 9.4696002649, 68.3400574875, 100, "(4.23)", "(1.39)"],
+    [null, "대구/경북", "(254)", 7.3652919686, 3.5395966935, 6.0634396952, 13.497319032, 12.8027568578, 56.7315957528, 100, "(3.91)", "(1.56)"],
+    [null, "부산/울산/경남", "(400)", 5.0943958955, 2.8999933121, 4.8959118349, 12.5625474007, 9.0420212049, 65.505130352, 100, "(4.14)", "(1.43)"],
+    [null, "강원", "(69)", 13.0443794579, 0, 5.1940587832, 9.8527669766, 6.2248125493, 65.683982233, 100, "(3.93)", "(1.76)"],
+    [null, "제주", "(36)", 2.9476064767, 0, 1.3809643368, 16.1000870751, 14.109356324, 65.4619857873, 100, "(4.35)", "(1.12)"],
+    ["스마트폰 이용 여부", "이용", "(2645)", 6.532354315, 2.95140513, 4.1860135592, 12.4695717017, 11.0851902527, 62.7754650414, 100, "(4.07)", "(1.49)"],
+    [null, "미이용", "(29)", 31.1711403189, 2.8449900961, 1.6916571827, 19.0967577589, 2.9716613982, 42.2237932453, 100, "(2.87)", "(2.19)"],
+    ["미디어 교육 경험", "있음", "(1980)", 6.6765979428, 2.3638040872, 4.0626968295, 12.5138795475, 11.0801107083, 63.3029108847, 100, "(4.09)", "(1.48)"],
+    [null, "없음", "(694)", 7.165936837, 4.6243033617, 4.4322151165, 12.6242591791, 10.7554573188, 60.3978281869, 100, "(3.96)", "(1.57)"]
+  ];
+
+  function rowTitle(r) {
+    var a = r[0] && String(r[0]).trim();
+    var b = r[1] && String(r[1]).trim();
+    if (a && b) return a + " · " + b;
+    if (b) return b;
+    return a || "행";
+  }
+
+  function rowPercents(r) {
+    return [3, 4, 5, 6, 7, 8].map(function (i) {
+      var v = Number(r[i]);
+      return Number.isFinite(v) ? v : 0;
+    });
+  }
+
+  function averagePercents(indices) {
+    var acc = [0, 0, 0, 0, 0, 0];
+    indices.forEach(function (idx) {
+      var p = rowPercents(RAW[idx]);
+      for (var i = 0; i < 6; i++) acc[i] += p[i];
+    });
+    var n = indices.length || 1;
+    return acc.map(function (x) { return x / n; });
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /** y of cubic-bezier(0.65,0)-(0.35,1) at time t in [0,1] */
+  function easeBezier6535(t) {
+    function xOf(u) {
+      return 3 * (1 - u) * (1 - u) * u * 0.65 + 3 * (1 - u) * u * u * 0.35 + u * u * u;
+    }
+    function yOf(u) {
+      return 3 * (1 - u) * u * u + u * u * u;
+    }
+    var lo = 0;
+    var hi = 1;
+    var u;
+    for (var i = 0; i < 28; i++) {
+      u = (lo + hi) / 2;
+      if (xOf(u) < t) lo = u;
+      else hi = u;
+    }
+    u = (lo + hi) / 2;
+    return yOf(u);
+  }
+
+  var tbody = ROOT.querySelector("#uc-tbody");
+  var pieCanvas = ROOT.querySelector("#uc-pie");
+  var barCanvas = ROOT.querySelector("#uc-bar");
+  var pieWrap = ROOT.querySelector("#uc-pie-wrap");
+  var barWrap = ROOT.querySelector("#uc-bar-wrap");
+  var legendEl = ROOT.querySelector("#uc-legend");
+  var selectionEl = ROOT.querySelector("#uc-selection");
+
+  var selected = new Set([0]);
+  var lastIndex = 0;
+  var displayVals = averagePercents([0]);
+  var animStart = 0;
+  var fromVals = displayVals.slice();
+  var targetVals = displayVals.slice();
+  var animFrame = 0;
+  var ANIM_MS = 800;
+
+  function roundPath(ctx, x, y, w, h, r) {
+    if (typeof ctx.roundRect === "function") {
+      ctx.roundRect(x, y, w, h, r);
+      return;
+    }
+    var d = Math.min(r, w / 2, h / 2);
+    ctx.moveTo(x + d, y);
+    ctx.arcTo(x + w, y, x + w, y + h, d);
+    ctx.arcTo(x + w, y + h, x, y + h, d);
+    ctx.arcTo(x, y + h, x, y, d);
+    ctx.arcTo(x, y, x + w, y, d);
+    ctx.closePath();
+  }
+
+  function fitCanvas(canvas, wrap, cssH) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var rect = wrap.getBoundingClientRect();
+    var cssW = Math.max(200, Math.floor(rect.width) || wrap.clientWidth || 280);
+    var w = Math.floor(cssW * dpr);
+    var h = Math.floor(cssH * dpr);
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = cssW + "px";
+    canvas.style.height = cssH + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx: ctx, lw: cssW, lh: cssH };
+  }
+
+  RAW.forEach(function (r, idx) {
+    var tr = document.createElement("tr");
+    tr.dataset.index = String(idx);
+    var perc = rowPercents(r);
+    var td0 = document.createElement("td");
+    td0.textContent = rowTitle(r);
+    tr.appendChild(td0);
+    var td1 = document.createElement("td");
+    td1.className = "uc-mono";
+    td1.textContent = String(r[2] || "");
+    tr.appendChild(td1);
+    for (var j = 0; j < 6; j++) {
+      var td = document.createElement("td");
+      td.className = "uc-mono";
+      td.textContent = perc[j].toFixed(1) + "%";
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  });
+
+  function syncRows() {
+    var multi = selected.size > 1;
+    tbody.querySelectorAll("tr").forEach(function (tr) {
+      var i = Number(tr.dataset.index);
+      tr.classList.toggle("uc-sel", selected.has(i));
+      tr.classList.toggle("uc-dim", multi && !selected.has(i));
+    });
+  }
+
+  function updateSelectionText() {
+    var text = "";
+    if (selected.size === 0) text = "없음";
+    else if (selected.size === 1) text = rowTitle(RAW[Array.from(selected)[0]]);
+    else text = selected.size + "행 평균";
+    selectionEl.innerHTML = "<strong>선택</strong> " + escapeHtml(text);
+  }
+
+  function drawLegend(vals) {
+    legendEl.innerHTML = LABELS.map(function (lab, i) {
+      return "<span><span class=\"uc-swatch\" style=\"background:" + COLORS[i] + "\"></span>" + escapeHtml(lab) + " " + vals[i].toFixed(1) + "%</span>";
+    }).join("");
+  }
+
+  function drawPie(values) {
+    var o = fitCanvas(pieCanvas, pieWrap, 256);
+    var ctx = o.ctx;
+    var w = o.lw;
+    var h = o.lh;
+    ctx.clearRect(0, 0, w, h);
+    var cx = w * 0.5;
+    var cy = h * 0.5;
+    var R = Math.min(w, h) * 0.38;
+    var r0 = R * 0.55;
+    var total = values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var ang = -Math.PI / 2;
+    values.forEach(function (v, i) {
+      var sweep = (v / total) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, ang, ang + sweep);
+      ctx.arc(cx, cy, r0, ang + sweep, ang, true);
+      ctx.closePath();
+      ctx.fillStyle = COLORS[i];
+      ctx.fill();
+      ctx.strokeStyle = BLACK;
+      ctx.lineWidth = i === 5 ? 3 : 3;
+      ctx.stroke();
+      ang += sweep;
+    });
+    ctx.beginPath();
+    ctx.arc(cx, cy, r0 - 0.5, 0, Math.PI * 2);
+    ctx.strokeStyle = BLACK;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, R + 0.5, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  function drawBar(values) {
+    var o = fitCanvas(barCanvas, barWrap, 256);
+    var ctx = o.ctx;
+    var w = o.lw;
+    var h = o.lh;
+    ctx.clearRect(0, 0, w, h);
+    var pad = { l: Math.max(32, w * 0.08), r: 12, t: 16, b: Math.max(40, h * 0.18) };
+    var innerW = w - pad.l - pad.r;
+    var innerH = h - pad.t - pad.b;
+    var maxV = Math.max.apply(null, values.concat([1]));
+    var bw = innerW / values.length * 0.55;
+    var gap = innerW / values.length * 0.45;
+    ctx.fillStyle = BLACK;
+    ctx.beginPath();
+    roundPath(ctx, pad.l, pad.t, innerW, innerH, 8);
+    ctx.fill();
+    values.forEach(function (v, i) {
+      var bh = (v / maxV) * innerH;
+      var x = pad.l + i * (bw + gap) + gap * 0.18;
+      var y = pad.t + innerH - bh;
+      ctx.fillStyle = COLORS[i];
+      var rr = 5;
+      ctx.beginPath();
+      if (bh >= rr) roundPath(ctx, x, y, bw, bh, rr);
+      else ctx.rect(x, y, bw, Math.max(0, bh));
+      ctx.fill();
+      ctx.strokeStyle = BLACK;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    });
+    var fs = Math.max(9.5, Math.min(12, w / 48));
+    ctx.fillStyle = YELLOW;
+    ctx.font = "900 " + fs + "px Pretendard, sans-serif";
+    LABELS.forEach(function (lab, i) {
+      var x = pad.l + i * (bw + gap) + gap * 0.18 + bw / 2;
+      ctx.save();
+      ctx.translate(x, h - pad.b * 0.3);
+      ctx.rotate(-0.45);
+      ctx.textAlign = "right";
+      ctx.fillText(lab, 0, 0);
+      ctx.restore();
+    });
+  }
+
+  function paint() {
+    drawPie(displayVals);
+    drawBar(displayVals);
+    drawLegend(displayVals);
+  }
+
+  function tick(now) {
+    var t = Math.min(1, (now - animStart) / ANIM_MS);
+    var k = easeBezier6535(t);
+    for (var i = 0; i < 6; i++) {
+      displayVals[i] = fromVals[i] + (targetVals[i] - fromVals[i]) * k;
+    }
+    paint();
+    if (t < 1) animFrame = requestAnimationFrame(tick);
+    else {
+      animFrame = 0;
+      displayVals = targetVals.slice();
+      paint();
+    }
+  }
+
+  function goAnimate(next) {
+    targetVals = next.slice();
+    fromVals = displayVals.slice();
+    animStart = performance.now();
+    if (animFrame) cancelAnimationFrame(animFrame);
+    animFrame = requestAnimationFrame(tick);
+  }
+
+  function applySelection() {
+    var idxs = Array.from(selected).sort(function (a, b) { return a - b; });
+    var vals = idxs.length ? averagePercents(idxs) : [0, 0, 0, 0, 0, 0];
+    goAnimate(vals);
+    syncRows();
+    updateSelectionText();
+  }
+
+  tbody.addEventListener("click", function (e) {
+    var tr = e.target.closest("tr");
+    if (!tr || !tbody.contains(tr)) return;
+    var idx = Number(tr.dataset.index);
+    if (e.shiftKey && lastIndex !== null) {
+      var a = Math.min(lastIndex, idx);
+      var b = Math.max(lastIndex, idx);
+      selected.clear();
+      for (var i = a; i <= b; i++) selected.add(i);
+    } else if (e.metaKey || e.ctrlKey) {
+      if (selected.has(idx)) selected.delete(idx);
+      else selected.add(idx);
+      lastIndex = idx;
+    } else {
+      selected = new Set([idx]);
+      lastIndex = idx;
+    }
+    if (selected.size === 0) selected.add(idx);
+    applySelection();
+  });
+
+  ROOT.querySelector("#uc-btn-all").addEventListener("click", function () {
+    selected.clear();
+    for (var j = 0; j < RAW.length; j++) selected.add(j);
+    lastIndex = RAW.length - 1;
+    applySelection();
+  });
+
+  ROOT.querySelector("#uc-btn-clear").addEventListener("click", function () {
+    selected = new Set([0]);
+    lastIndex = 0;
+    applySelection();
+  });
+
+  var resizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(paint, 100);
+  });
+
+  if (typeof ResizeObserver !== "undefined") {
+    var ro = new ResizeObserver(function () { paint(); });
+    ro.observe(pieWrap);
+    ro.observe(barWrap);
+  }
+
+  syncRows();
+  updateSelectionText();
+  displayVals = averagePercents([0]);
+  targetVals = displayVals.slice();
+  fromVals = displayVals.slice();
+  paint();
+})();
+  </script>
+</body>
+</html>

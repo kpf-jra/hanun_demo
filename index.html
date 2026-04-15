@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visual Content Lab</title>
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    #unique-content-882100,
+    #unique-content-882100 * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    #unique-content-882100 {
+      --yellow: #facc15;
+      --black: #000000;
+      --white: #ffffff;
+      --shadow: 12px 12px 0 var(--yellow);
+      --border: 4px solid var(--black);
+      --ease-pop: cubic-bezier(0.65, 0, 0.35, 1);
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.55;
+      min-height: 100dvh;
+      padding: clamp(1rem, 4vw, 2rem);
+    }
+    #unique-content-882100 .lab-stack {
+      max-width: 44rem;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1.25rem, 3vw, 1.75rem);
+    }
+    #unique-content-882100 .lab-hero {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: clamp(1.5rem, 5vw, 2.5rem);
+      transition: transform 0.8s var(--ease-pop), box-shadow 0.8s var(--ease-pop);
+    }
+    #unique-content-882100 .lab-hero:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 16px 16px 0 var(--yellow);
+    }
+    #unique-content-882100 .lab-kicker {
+      margin: 0 0 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    #unique-content-882100 .lab-title {
+      margin: 0;
+      font-size: clamp(2rem, 1.4rem + 3vw, 2.85rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+    #unique-content-882100 .lab-title span {
+      display: inline-block;
+      margin-top: 0.25rem;
+      padding: 0.08em 0.4em 0.12em;
+      background: var(--yellow);
+      border: var(--border);
+      box-shadow: 8px 8px 0 var(--black);
+    }
+    #unique-content-882100 .lab-lead {
+      margin: 1rem 0 0;
+      max-width: 36rem;
+      font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+      font-weight: 500;
+      color: var(--black);
+      opacity: 0.88;
+    }
+    #unique-content-882100 .lab-panel {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: clamp(1.25rem, 3.5vw, 1.75rem);
+    }
+    #unique-content-882100 .lab-panel h2 {
+      margin: 0 0 1rem;
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    #unique-content-882100 ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    #unique-content-882100 li a {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.1rem;
+      border: var(--border);
+      background: var(--white);
+      color: var(--black);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.02rem;
+      letter-spacing: -0.02em;
+      box-shadow: 10px 10px 0 var(--yellow);
+      transition: transform 0.8s var(--ease-pop), box-shadow 0.8s var(--ease-pop), background 0.35s ease;
+    }
+    #unique-content-882100 li a:hover,
+    #unique-content-882100 li a:focus-visible {
+      transform: translate(-5px, -5px);
+      box-shadow: 15px 15px 0 var(--yellow);
+      background: var(--yellow);
+      outline: none;
+    }
+    #unique-content-882100 li a:active {
+      transform: translate(2px, 2px);
+      box-shadow: 6px 6px 0 var(--yellow);
+    }
+    #unique-content-882100 li a .lab-go {
+      flex-shrink: 0;
+      width: 2.75rem;
+      height: 2.75rem;
+      display: grid;
+      place-items: center;
+      border: var(--border);
+      background: var(--black);
+      color: var(--yellow);
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+    #unique-content-882100 li a:hover .lab-go,
+    #unique-content-882100 li a:focus-visible .lab-go {
+      background: var(--white);
+      color: var(--black);
+    }
+    #unique-content-882100 .lab-meta {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      opacity: 0.85;
+      line-height: 1.45;
+    }
+    #unique-content-882100 .lab-foot {
+      margin-top: 0.25rem;
+      padding-top: 1rem;
+      border-top: var(--border);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      opacity: 0.65;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #unique-content-882100 .lab-hero,
+      #unique-content-882100 li a { transition: none; }
+      #unique-content-882100 .lab-hero:hover,
+      #unique-content-882100 li a:hover,
+      #unique-content-882100 li a:focus-visible { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="unique-content-882100">
+    <div class="lab-stack">
+      <header class="lab-hero">
+        <p class="lab-kicker">Static demos</p>
+        <h1 class="lab-title">Visual Content<br /><span>Lab</span></h1>
+        <p class="lab-lead">자료를 바탕으로 한 비주얼·인터랙티브 콘텐츠를 시연하기 위한 정적 페이지 모음입니다. GitHub Pages에 올려 바로 공유할 수 있습니다.</p>
+      </header>
+
+      <section class="lab-panel" aria-labelledby="lab-demos-heading">
+        <h2 id="lab-demos-heading">Demos</h2>
+        <ul>
+          <li>
+            <a href="test-xlsx-demo.html">
+              <span class="lab-go" aria-hidden="true">↗</span>
+              <span>
+                test.xlsx — 표 · 파이 · 바 연동
+                <span class="lab-meta">행을 고르면 차트가 같은 분포로 맞춰집니다.</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+        <p class="lab-foot">테마: #FACC15 · #000 · #fff · Pretendard · 굵은 테두리 + 노랑 단색 그림자</p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
