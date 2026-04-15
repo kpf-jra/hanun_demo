@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>가로세로 연결 퀴즈 — 《신문과 방송》 2026년 4월호</title>
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    #unique-content-991302,
+    #unique-content-991302 * { box-sizing: border-box; }
+    #unique-content-991302 img,
+    #unique-content-991302 video,
+    #unique-content-991302 svg { max-width: 100%; height: auto; }
+    #unique-content-991302 {
+      --yellow: #facc15;
+      --black: #000000;
+      --white: #ffffff;
+      --block: #e4e2df;
+      --gridline: #c4c2bd;
+      --shadow: 12px 12px 0 var(--yellow);
+      --border: 4px solid var(--black);
+      --error: #b91c1c;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      min-height: 100dvh;
+      padding: clamp(0.75rem, 2vw, 1.25rem);
+      padding-bottom: 2.5rem;
+    }
+    #unique-content-991302 .nx-mast {
+      max-width: 58rem;
+      margin: 0 auto 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 0.75rem;
+      justify-content: space-between;
+    }
+    #unique-content-991302 .nx-back {
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: var(--black);
+      text-decoration: none;
+      padding: 0.4rem 0.85rem;
+      border: var(--border);
+      box-shadow: 6px 6px 0 var(--yellow);
+      background: var(--white);
+    }
+    #unique-content-991302 .nx-back:hover { background: var(--yellow); }
+    #unique-content-991302 .nx-kicker {
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 900;
+      margin: 0 0 0.35rem;
+    }
+    #unique-content-991302 .nx-title {
+      margin: 0;
+      font-weight: 900;
+      font-size: clamp(1.4rem, 1.15rem + 1.3vw, 1.9rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    #unique-content-991302 .nx-lead {
+      max-width: 58rem;
+      margin: 0 auto 1.25rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.55;
+      opacity: 0.88;
+    }
+    #unique-content-991302 .nx-shell {
+      max-width: 58rem;
+      margin: 0 auto;
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 900px) {
+      #unique-content-991302 .nx-shell {
+        grid-template-columns: minmax(280px, 1fr) minmax(300px, 380px);
+        align-items: start;
+      }
+    }
+    #unique-content-991302 .nx-board {
+      min-width: 0;
+      width: 100%;
+    }
+    #unique-content-991302 .nx-grid-wrap {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: clamp(0.65rem, 1.5vw, 1rem);
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      width: 100%;
+      min-height: 12rem;
+    }
+    #unique-content-991302 .nx-grid {
+      --nx-cell: clamp(26px, 6vmin, 36px);
+      display: grid;
+      gap: 0;
+      width: fit-content;
+      max-width: none;
+      margin: 0 auto;
+      border-top: 1px solid var(--gridline);
+      border-left: 1px solid var(--gridline);
+      user-select: none;
+      background: var(--gridline);
+    }
+    #unique-content-991302 .nx-cell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      max-width: none;
+      border-right: 1px solid var(--gridline);
+      border-bottom: 1px solid var(--gridline);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #unique-content-991302 .nx-cell.nx-block {
+      background: var(--block);
+      pointer-events: none;
+    }
+    #unique-content-991302 .nx-cell.nx-active {
+      background: rgba(250, 204, 21, 0.55);
+      box-shadow: inset 0 0 0 2px var(--black);
+      z-index: 1;
+    }
+    #unique-content-991302 .nx-cell.nx-dir-secondary {
+      background: rgba(250, 204, 21, 0.22);
+    }
+    #unique-content-991302 .nx-cell.nx-error {
+      background: #fee2e2;
+    }
+    #unique-content-991302 .nx-cell.nx-solved {
+      font-weight: 900;
+    }
+    #unique-content-991302 .nx-num {
+      position: absolute;
+      left: 3px;
+      top: 2px;
+      font-size: clamp(0.48rem, 1.1vw, 0.58rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--black);
+      pointer-events: none;
+    }
+    #unique-content-991302 .nx-cell input {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      text-align: center;
+      font-size: clamp(0.75rem, 2.4vmin, 1rem);
+      font-weight: 800;
+      font-family: inherit;
+      padding: 0;
+      padding-top: 0.2em;
+      color: var(--black);
+      caret-color: var(--black);
+    }
+    #unique-content-991302 .nx-cell input:focus { outline: none; }
+    #unique-content-991302 .nx-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+    }
+    #unique-content-991302 .nx-btn {
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.78rem;
+      padding: 0.5rem 1rem;
+      border: var(--border);
+      background: var(--white);
+      cursor: pointer;
+      box-shadow: 6px 6px 0 var(--yellow);
+    }
+    #unique-content-991302 .nx-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--yellow);
+      background: var(--yellow);
+    }
+    #unique-content-991302 .nx-btn-primary {
+      background: var(--black);
+      color: var(--yellow);
+    }
+    #unique-content-991302 .nx-btn-primary:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+    #unique-content-991302 .nx-clues {
+      border: var(--border);
+      box-shadow: var(--shadow);
+      background: var(--white);
+      padding: 0.85rem 1rem;
+      max-height: min(72vh, 560px);
+      overflow: auto;
+    }
+    #unique-content-991302 .nx-clues > h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    #unique-content-991302 #nx-clue-list {
+      display: grid;
+      gap: 1rem 1.25rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 420px) {
+      #unique-content-991302 #nx-clue-list { grid-template-columns: 1fr 1fr; }
+    }
+    #unique-content-991302 .nx-clue-head {
+      margin: 0 0 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 3px solid var(--black);
+      padding-bottom: 0.25rem;
+    }
+    #unique-content-991302 .nx-clue {
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.45;
+      cursor: pointer;
+      padding: 0.3rem 0.25rem;
+    }
+    #unique-content-991302 .nx-clue:hover { background: rgba(250, 204, 21, 0.25); }
+    #unique-content-991302 .nx-clue.nx-clue-active {
+      background: var(--yellow);
+      box-shadow: inset 4px 0 0 var(--black);
+    }
+    #unique-content-991302 .nx-clue-num {
+      font-weight: 900;
+      margin-right: 0.2rem;
+    }
+    #unique-content-991302 .nx-hint {
+      margin-top: 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.5;
+      opacity: 0.78;
+    }
+    #unique-content-991302 .nx-toast {
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 900;
+      min-height: 1.25em;
+    }
+    #unique-content-991302 .nx-toast.ok { color: var(--black); background: var(--yellow); padding: 0.35rem 0.5rem; display: inline-block; border: 3px solid var(--black); }
+    #unique-content-991302 .nx-toast.bad { color: var(--error); }
+  </style>
+</head>
+<body>
+  <div id="unique-content-991302">
+    <div class="nx-mast">
+      <div>
+        <p class="nx-kicker">Crossword layout · 《신문과 방송》 2026년 4월호</p>
+        <h1 class="nx-title">가로세로 연결 퀴즈</h1>
+      </div>
+      <a class="nx-back" href="index.html">← Lab</a>
+    </div>
+    <p class="nx-lead">회색 칸은 막힌 칸, 흰 칸에 <strong>한 글자</strong>씩 입력합니다. 단어가 교차하는 곳은 <strong>같은 글자</strong>를 공유합니다. <strong>Tab</strong>으로 가로·세로를 바꾸고, 화살표로 칸을 옮기며, 오른쪽 단서를 누르면 그 단의 시작 칸으로 갑니다.</p>
+
+    <div class="nx-shell">
+      <div class="nx-board">
+        <div class="nx-grid-wrap">
+          <div class="nx-grid" id="nx-grid" role="grid" aria-label="가로세로 연결 격자"></div>
+        </div>
+        <div class="nx-toolbar">
+          <button type="button" class="nx-btn nx-btn-primary" id="nx-check">채점</button>
+          <button type="button" class="nx-btn" id="nx-reveal-word">이 단어 공개</button>
+          <button type="button" class="nx-btn" id="nx-clear">칸 비우기</button>
+        </div>
+        <p class="nx-toast" id="nx-toast" aria-live="polite"></p>
+        <p class="nx-hint">연결: ①체→②매체 · ②매→③매일아침 · ③침→④침입 · ④입→⑤투입 · ⑤투→⑥투자 · ⑥자→⑦자율성 · ⑦성→⑧성신여대 · ⑧대→⑨대담한범행 · ⑩ 역함수는 ⑨의 가운데 글자 <strong>한</strong>과 <strong>같은 열</strong>(위쪽 세로)에 배치했습니다. (원문 단서의 ‘함’은 ‘역함수’ 가운데 글자와 맞추기 위한 표기로 보입니다.)</p>
+      </div>
+      <aside class="nx-clues" aria-labelledby="nx-clues-h">
+        <h2 id="nx-clues-h">단서</h2>
+        <div id="nx-clue-list"></div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  "use strict";
+
+  var ROOT = document.getElementById("unique-content-991302");
+  if (!ROOT) return;
+
+  /** 격자: 행 0~6, 열 0~13 — 인접 단끼리 공유 글자에 맞춤 */
+  var ENTRIES = [
+    { num: 1, dir: "across", r: 5, c: 0, answer: "에코체임버", clue: "같은 생각을 가진 사람들끼리만 정보를 공유하여 의견이 점점 강화되는 현상을 일컫는 말은?" },
+    { num: 2, dir: "down", r: 4, c: 2, answer: "매체", clue: "신문, TV, 라디오, 잡지 등 뉴스를 전달하는 도구를 통칭하며, 1번 답의 두 번째 글자(체)를 포함하는 단어는?" },
+    { num: 3, dir: "across", r: 4, c: 2, answer: "매일아침", clue: "빅카인즈가 17개 지역 이슈를 종합하여 업데이트하는 주기로, 2번 답안의 첫 글자(매)로 시작하는 말은?" },
+    { num: 4, dir: "across", r: 4, c: 5, answer: "침입", clue: "‘침입해 들어오다’라는 겹말 표현의 기본 단어로, 3번 답안의 마지막 글자(침)를 첫 글자로 쓰는 단어는?" },
+    { num: 5, dir: "down", r: 3, c: 6, answer: "투입", clue: "‘AI가 본격적으로 업무에 이 상태가 되고…’ 문구에 쓰였으며, 4번 답안의 끝 글자(입)를 끝 글자로 공유하는 단어는?" },
+    { num: 6, dir: "across", r: 3, c: 6, answer: "투자", clue: "넷플릭스가 국내 콘텐츠에 직접 수행하며 글로벌 인지도를 높인 행위로, 5번 답안의 첫 글자(투)로 시작하는 단어는?" },
+    { num: 7, dir: "across", r: 3, c: 7, answer: "자율성", clue: "미디어 법제화 시 사업자에게 부여해야 할 가치로, 6번 답안의 마지막 글자(자)를 첫 글자로 포함하는 단어는?" },
+    { num: 8, dir: "down", r: 3, c: 9, answer: "성신여대", clue: "넷플릭스 커버 스토리를 집필한 김정섭 교수의 소속 대학으로, 7번 답안의 마지막 글자(성)를 첫 글자로 쓰는 단어는?" },
+    { num: 9, dir: "across", r: 6, c: 9, answer: "대담한범행", clue: "부록의 바른 표기법 중 ‘대범한 범행’ 대신 써야 할 표현으로, 8번 답안의 마지막 글자(대)를 첫 글자로 쓰는 단어는?" },
+    { num: 10, dir: "down", r: 0, c: 11, answer: "역함수", clue: "‘언론 보도에 따른 위기 관리에서 의존과 권력은 이 관계다’라고 설명된 용어로, 9번 답안의 세 번째 글자(함)를 중간에 포함하는 단어는?" }
+  ];
+
+  var ROWS = 7;
+  var COLS = 14;
+  var cells = [];
+  var inputs = [];
+  var activeR = 5;
+  var activeC = 0;
+  var direction = "across";
+  var toastEl = ROOT.querySelector("#nx-toast");
+  var cellFinalizeRaf = null;
+
+  function key(r, c) { return r + "," + c; }
+
+  function buildModel() {
+    var map = {};
+    var i;
+    var e;
+    var idx;
+    var ch;
+    var k;
+    for (i = 0; i < ENTRIES.length; i++) {
+      e = ENTRIES[i];
+      for (idx = 0; idx < e.answer.length; idx++) {
+        ch = e.answer[idx];
+        var r = e.dir === "across" ? e.r : e.r + idx;
+        var c = e.dir === "across" ? e.c + idx : e.c;
+        k = key(r, c);
+        if (map[k] && map[k] !== ch) throw new Error("Conflict " + k);
+        map[k] = ch;
+      }
+    }
+    return map;
+  }
+
+  var solutionMap;
+  try {
+    solutionMap = buildModel();
+  } catch (err) {
+    console.error(err);
+    if (toastEl) {
+      toastEl.textContent = "퍼즐 데이터 오류: " + (err && err.message ? err.message : String(err));
+    }
+    var fatalWrap = ROOT.querySelector(".nx-grid-wrap");
+    if (fatalWrap) {
+      fatalWrap.textContent = "";
+      var fp = document.createElement("p");
+      fp.style.cssText = "padding:1rem;font-weight:800;color:var(--error);margin:0;";
+      fp.textContent = "격자를 만들 수 없습니다: " + (err && err.message ? err.message : String(err));
+      fatalWrap.appendChild(fp);
+    }
+    return;
+  }
+
+  function cellAt(r, c) {
+    if (r < 0 || c < 0 || r >= ROWS || c >= COLS) return null;
+    return cells[r][c];
+  }
+
+  function isBlock(r, c) {
+    return !solutionMap[key(r, c)];
+  }
+
+  function getEntryForCell(r, c, dir) {
+    var j;
+    for (j = 0; j < ENTRIES.length; j++) {
+      var e = ENTRIES[j];
+      if (e.dir !== dir) continue;
+      if (dir === "across") {
+        if (r !== e.r || c < e.c || c >= e.c + e.answer.length) continue;
+        return e;
+      }
+      if (c !== e.c || r < e.r || r >= e.r + e.answer.length) continue;
+      return e;
+    }
+    return null;
+  }
+
+  function firstCellOfEntry(e) {
+    return { r: e.r, c: e.c };
+  }
+
+  function advance(r, c, dir, delta) {
+    var e = getEntryForCell(r, c, dir);
+    if (!e) return { r: r, c: c };
+    if (dir === "across") {
+      var nc = c + delta;
+      if (nc >= e.c && nc < e.c + e.answer.length) return { r: r, c: nc };
+      return { r: r, c: c };
+    }
+    var nr = r + delta;
+    if (nr >= e.r && nr < e.r + e.answer.length) return { r: nr, c: c };
+    return { r: r, c: c };
+  }
+
+  function focusCell(r, c) {
+    var cell = cellAt(r, c);
+    if (!cell || cell.classList.contains("nx-block")) return;
+    var inp = cell.querySelector("input");
+    if (inp) {
+      inp.focus();
+      activeR = r;
+      activeC = c;
+      paintActive();
+    }
+  }
+
+  function paintActive() {
+    var r;
+    var c;
+    for (r = 0; r < ROWS; r++) {
+      for (c = 0; c < COLS; c++) {
+        var cell = cells[r][c];
+        if (!cell || cell.classList.contains("nx-block")) continue;
+        cell.classList.remove("nx-active", "nx-dir-secondary");
+      }
+    }
+    var ea = getEntryForCell(activeR, activeC, "across");
+    var ed = getEntryForCell(activeR, activeC, "down");
+    var useA = direction === "across" && ea;
+    var useD = direction === "down" && ed;
+    if (useA) {
+      for (c = ea.c; c < ea.c + ea.answer.length; c++) {
+        var cl = cellAt(ea.r, c);
+        if (cl) cl.classList.add(c === activeC && ea.r === activeR ? "nx-active" : "nx-dir-secondary");
+      }
+    } else if (useD) {
+      for (r = ed.r; r < ed.r + ed.answer.length; r++) {
+        var cl2 = cellAt(r, ed.c);
+        if (cl2) cl2.classList.add(r === activeR && ed.c === activeC ? "nx-active" : "nx-dir-secondary");
+      }
+    } else if (ea) {
+      for (c = ea.c; c < ea.c + ea.answer.length; c++) {
+        var cl3 = cellAt(ea.r, c);
+        if (cl3) cl3.classList.add(c === activeC && ea.r === activeR ? "nx-active" : "nx-dir-secondary");
+      }
+    } else if (ed) {
+      for (r = ed.r; r < ed.r + ed.answer.length; r++) {
+        var cl4 = cellAt(r, ed.c);
+        if (cl4) cl4.classList.add(r === activeR && ed.c === activeC ? "nx-active" : "nx-dir-secondary");
+      }
+    }
+    var list = ROOT.querySelectorAll(".nx-clue");
+    list.forEach(function (el) { el.classList.remove("nx-clue-active"); });
+    var cur = direction === "across" ? ea : ed;
+    if (!cur && ea) cur = ea;
+    if (!cur && ed) cur = ed;
+    if (cur) {
+      var hit = ROOT.querySelector('.nx-clue[data-num="' + cur.num + '"]');
+      if (hit) hit.classList.add("nx-clue-active");
+    }
+  }
+
+  function setToast(msg, cls) {
+    toastEl.textContent = msg || "";
+    toastEl.className = "nx-toast" + (cls ? " " + cls : "");
+  }
+
+  function renderGrid() {
+    var gridEl = ROOT.querySelector("#nx-grid");
+    var cellPx = parseFloat(getComputedStyle(gridEl).getPropertyValue("--nx-cell"));
+    if (!Number.isFinite(cellPx) || cellPx < 18) cellPx = 32;
+    cellPx = Math.round(cellPx);
+    gridEl.style.gridTemplateColumns = "repeat(" + COLS + ", " + cellPx + "px)";
+    gridEl.style.gridAutoRows = cellPx + "px";
+    cells = [];
+    inputs = [];
+    var starts = {};
+    ENTRIES.forEach(function (e) {
+      var sk0 = key(e.r, e.c);
+      if (!starts[sk0]) starts[sk0] = [];
+      starts[sk0].push(e.num);
+    });
+    for (var r = 0; r < ROWS; r++) {
+      cells[r] = [];
+      for (var c = 0; c < COLS; c++) {
+        var cell = document.createElement("div");
+        cell.className = "nx-cell";
+        cell.dataset.r = String(r);
+        cell.dataset.c = String(c);
+        if (isBlock(r, c)) {
+          cell.classList.add("nx-block");
+          cell.setAttribute("role", "presentation");
+        } else {
+          cell.setAttribute("role", "gridcell");
+          cell.tabIndex = -1;
+          var inp = document.createElement("input");
+          inp.type = "text";
+          inp.setAttribute("lang", "ko");
+          inp.inputMode = "text";
+          inp.enterKeyHint = "done";
+          inp.autocomplete = "off";
+          inp.autocapitalize = "off";
+          inp.spellcheck = false;
+          inp.dataset.r = String(r);
+          inp.dataset.c = String(c);
+          var sk = key(r, c);
+          if (starts[sk] && starts[sk].length) {
+            var num = document.createElement("span");
+            num.className = "nx-num";
+            num.textContent = starts[sk].join("·");
+            cell.appendChild(num);
+          }
+          cell.appendChild(inp);
+          inputs.push(inp);
+          cell.addEventListener("click", function (ev) {
+            var t = ev.currentTarget.querySelector("input");
+            if (t) t.focus();
+          });
+          inp.addEventListener("focus", function (ev) {
+            var tg = ev.target;
+            activeR = Number(tg.dataset.r);
+            activeC = Number(tg.dataset.c);
+            paintActive();
+          });
+          inp.addEventListener("keydown", onKeydown);
+          inp.addEventListener("input", onInput);
+          inp.addEventListener("compositionend", onCompositionEnd);
+        }
+        gridEl.appendChild(cell);
+        cells[r][c] = cell;
+      }
+    }
+  }
+
+  function finalizeHangulCell(t) {
+    if (!t || !t.isConnected) return;
+    var r = Number(t.dataset.r);
+    var c = Number(t.dataset.c);
+    var v = (t.value || "").replace(/[^\uAC00-\uD7A3]/g, "");
+    if (v.length > 1) v = v.slice(-1);
+    t.value = v;
+    if (v.length === 1) {
+      var n = advance(r, c, direction, 1);
+      if (n.r !== r || n.c !== c) focusCell(n.r, n.c);
+    }
+  }
+
+  function queueFinalizeHangulCell(t) {
+    if (cellFinalizeRaf != null) cancelAnimationFrame(cellFinalizeRaf);
+    cellFinalizeRaf = requestAnimationFrame(function () {
+      cellFinalizeRaf = null;
+      finalizeHangulCell(t);
+    });
+  }
+
+  function onInput(ev) {
+    if (ev.isComposing) return;
+    queueFinalizeHangulCell(ev.target);
+  }
+
+  function onCompositionEnd(ev) {
+    queueFinalizeHangulCell(ev.target);
+  }
+
+  function onKeydown(ev) {
+    if (ev.isComposing || ev.key === "Process") return;
+    var t = ev.target;
+    var r = Number(t.dataset.r);
+    var c = Number(t.dataset.c);
+    if (ev.key === "Tab") {
+      ev.preventDefault();
+      direction = direction === "across" ? "down" : "across";
+      paintActive();
+      setToast(direction === "across" ? "가로 입력" : "세로 입력", "");
+      return;
+    }
+    if (ev.key === "ArrowRight") {
+      ev.preventDefault();
+      var na = advance(r, c, "across", 1);
+      if (na.c !== c || na.r !== r) focusCell(na.r, na.c);
+      else {
+        direction = "across";
+        paintActive();
+      }
+      return;
+    }
+    if (ev.key === "ArrowLeft") {
+      ev.preventDefault();
+      var na2 = advance(r, c, "across", -1);
+      if (na2.c !== c || na2.r !== r) focusCell(na2.r, na2.c);
+      return;
+    }
+    if (ev.key === "ArrowDown") {
+      ev.preventDefault();
+      var nd = advance(r, c, "down", 1);
+      if (nd.r !== r || nd.c !== c) focusCell(nd.r, nd.c);
+      else {
+        direction = "down";
+        paintActive();
+      }
+      return;
+    }
+    if (ev.key === "ArrowUp") {
+      ev.preventDefault();
+      var nd2 = advance(r, c, "down", -1);
+      if (nd2.r !== r || nd2.c !== c) focusCell(nd2.r, nd2.c);
+      return;
+    }
+    if (ev.key === "Backspace" && !t.value) {
+      ev.preventDefault();
+      var prev = advance(r, c, direction, -1);
+      if (prev.r !== r || prev.c !== c) {
+        focusCell(prev.r, prev.c);
+        var pi = cellAt(prev.r, prev.c).querySelector("input");
+        if (pi) pi.value = "";
+      }
+    }
+  }
+
+  function readGrid() {
+    var g = {};
+    var r;
+    var c;
+    for (r = 0; r < ROWS; r++) {
+      for (c = 0; c < COLS; c++) {
+        if (isBlock(r, c)) continue;
+        var inp = cellAt(r, c).querySelector("input");
+        g[key(r, c)] = (inp && inp.value) ? inp.value[0] : "";
+      }
+    }
+    return g;
+  }
+
+  function checkAll() {
+    var g = readGrid();
+    var ok = true;
+    var r;
+    var c;
+    for (r = 0; r < ROWS; r++) {
+      for (c = 0; c < COLS; c++) {
+        if (isBlock(r, c)) continue;
+        var cell = cellAt(r, c);
+        cell.classList.remove("nx-error", "nx-solved");
+        var k = key(r, c);
+        var want = solutionMap[k];
+        var got = g[k] || "";
+        if (!got) ok = false;
+        else if (got !== want) {
+          ok = false;
+          cell.classList.add("nx-error");
+        } else {
+          cell.classList.add("nx-solved");
+        }
+      }
+    }
+    if (ok) setToast("가로세로 모두 맞았습니다. 수고하셨습니다!", "ok");
+    else setToast("틀린 칸이 있습니다. 빨간 칸을 고쳐 보세요.", "bad");
+  }
+
+  function revealCurrentWord() {
+    var e = getEntryForCell(activeR, activeC, direction);
+    if (!e) {
+      e = getEntryForCell(activeR, activeC, direction === "across" ? "down" : "across");
+      if (e) direction = e.dir;
+    }
+    if (!e) return;
+    var idx;
+    for (idx = 0; idx < e.answer.length; idx++) {
+      var r = e.dir === "across" ? e.r : e.r + idx;
+      var c = e.dir === "across" ? e.c + idx : e.c;
+      var inp = cellAt(r, c).querySelector("input");
+      if (inp) inp.value = e.answer[idx];
+    }
+    setToast(e.num + "번 단어를 공개했습니다.", "");
+    paintActive();
+  }
+
+  function clearPuzzle() {
+    inputs.forEach(function (inp) {
+      inp.value = "";
+      inp.closest(".nx-cell").classList.remove("nx-error", "nx-solved");
+    });
+    setToast("칸을 비웠습니다.", "");
+    focusCell(5, 0);
+  }
+
+  function renderClues() {
+    var wrap = ROOT.querySelector("#nx-clue-list");
+    wrap.innerHTML = "";
+    var colA = document.createElement("div");
+    var colD = document.createElement("div");
+    colA.innerHTML = '<h3 class="nx-clue-head">가로 Across</h3>';
+    colD.innerHTML = '<h3 class="nx-clue-head">세로 Down</h3>';
+    ENTRIES.forEach(function (e) {
+      var div = document.createElement("div");
+      div.className = "nx-clue";
+      div.dataset.num = String(e.num);
+      div.innerHTML = '<span class="nx-clue-num">' + e.num + ".</span>" + escapeHtml(e.clue);
+      div.addEventListener("click", function () {
+        direction = e.dir;
+        var f = firstCellOfEntry(e);
+        focusCell(f.r, f.c);
+        setToast("", "");
+      });
+      (e.dir === "across" ? colA : colD).appendChild(div);
+    });
+    wrap.appendChild(colA);
+    wrap.appendChild(colD);
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  renderClues();
+  renderGrid();
+  ROOT.querySelector("#nx-check").addEventListener("click", checkAll);
+  ROOT.querySelector("#nx-reveal-word").addEventListener("click", revealCurrentWord);
+  ROOT.querySelector("#nx-clear").addEventListener("click", clearPuzzle);
+
+  focusCell(5, 0);
+  direction = "across";
+  paintActive();
+})();
+  </script>
+</body>
+</html>
