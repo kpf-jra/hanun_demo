@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>뉴스 사실확인 체크리스트 — AI 검토 (Open / HF)</title>
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    #unique-content-nv2026,
+    #unique-content-nv2026 * { box-sizing: border-box; max-width: 100%; }
+    #unique-content-nv2026 {
+      --yellow: #facc15;
+      --black: #000000;
+      --white: #ffffff;
+      --green: #15803d;
+      --red: #b91c1c;
+      --amber: #b45309;
+      --shadow: 12px 12px 0 var(--yellow);
+      --border: 4px solid var(--black);
+      --ease: cubic-bezier(0.65, 0, 0.35, 1);
+      font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      min-height: 100dvh;
+      padding: clamp(0.85rem, 3vw, 1.25rem);
+      padding-bottom: 3rem;
+    }
+    #unique-content-nv2026 .nv-wrap {
+      max-width: 52rem;
+      margin: 0 auto;
+    }
+    #unique-content-nv2026 .nv-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 1rem;
+      font-weight: 800;
+      font-size: 0.82rem;
+      text-decoration: none;
+      color: var(--black);
+      border: var(--border);
+      box-shadow: 8px 8px 0 var(--yellow);
+      background: var(--white);
+      transition: transform 0.8s var(--ease), box-shadow 0.8s var(--ease);
+    }
+    #unique-content-nv2026 .nv-back:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 12px 12px 0 var(--yellow);
+    }
+    #unique-content-nv2026 .nv-badge {
+      display: inline-block;
+      margin: 0.75rem 0 0.5rem;
+      padding: 0.25rem 0.55rem;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--yellow);
+      border: 3px solid var(--black);
+    }
+    #unique-content-nv2026 .nv-title {
+      margin: 0;
+      font-size: clamp(1.35rem, 1.1rem + 1.8vw, 1.95rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    #unique-content-nv2026 .nv-lead {
+      margin: 0.65rem 0 0;
+      font-weight: 600;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      opacity: 0.9;
+    }
+    #unique-content-nv2026 .nv-card {
+      margin-top: 1rem;
+      padding: clamp(1rem, 3vw, 1.4rem);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      background: var(--white);
+    }
+    #unique-content-nv2026 .nv-card h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #unique-content-nv2026 .nv-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    #unique-content-nv2026 .nv-tab {
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.9rem;
+      border: 3px solid var(--black);
+      background: var(--white);
+      cursor: pointer;
+      transition: background 0.25s ease;
+    }
+    #unique-content-nv2026 .nv-tab[aria-selected="true"] {
+      background: var(--yellow);
+    }
+    #unique-content-nv2026 .nv-panel { display: none; }
+    #unique-content-nv2026 .nv-panel.nv-on { display: block; }
+    #unique-content-nv2026 textarea,
+    #unique-content-nv2026 input[type="url"],
+    #unique-content-nv2026 input[type="password"],
+    #unique-content-nv2026 input[type="text"] {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 0.75rem 0.85rem;
+      border: var(--border);
+      background: var(--white);
+      line-height: 1.5;
+    }
+    #unique-content-nv2026 textarea {
+      min-height: 14rem;
+      resize: vertical;
+    }
+    #unique-content-nv2026 .nv-hint {
+      margin: 0.5rem 0 0;
+      font-size: 0.78rem;
+      font-weight: 600;
+      line-height: 1.45;
+      opacity: 0.85;
+    }
+    #unique-content-nv2026 .nv-row {
+      display: grid;
+      gap: 0.75rem;
+    }
+    @media (min-width: 40rem) {
+      #unique-content-nv2026 .nv-row-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    #unique-content-nv2026 .nv-label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    #unique-content-nv2026 .nv-btn {
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.35rem;
+      border: var(--border);
+      cursor: pointer;
+      background: var(--white);
+      box-shadow: 8px 8px 0 var(--yellow);
+      transition: transform 0.8s var(--ease), box-shadow 0.8s var(--ease), background 0.35s ease;
+    }
+    #unique-content-nv2026 .nv-btn:hover:not(:disabled) {
+      transform: translate(-3px, -3px);
+      box-shadow: 12px 12px 0 var(--yellow);
+      background: var(--yellow);
+    }
+    #unique-content-nv2026 .nv-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #unique-content-nv2026 .nv-btn-primary {
+      background: var(--yellow);
+      width: 100%;
+      margin-top: 0.85rem;
+    }
+    #unique-content-nv2026 .nv-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 0.65rem;
+    }
+    #unique-content-nv2026 .nv-progress {
+      margin-top: 1rem;
+      display: none;
+    }
+    #unique-content-nv2026 .nv-progress.nv-on { display: block; }
+    #unique-content-nv2026 .nv-progress-bar {
+      height: 1rem;
+      border: 3px solid var(--black);
+      background: var(--white);
+      overflow: hidden;
+    }
+    #unique-content-nv2026 .nv-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--yellow);
+      transition: width 0.35s var(--ease);
+    }
+    #unique-content-nv2026 .nv-progress-text {
+      margin: 0.45rem 0 0;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    #unique-content-nv2026 .nv-results { display: none; margin-top: 1rem; }
+    #unique-content-nv2026 .nv-results.nv-on { display: block; }
+    #unique-content-nv2026 .nv-score-ring {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    #unique-content-nv2026 .nv-score-num {
+      font-size: clamp(3rem, 8vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    #unique-content-nv2026 .nv-score-num span { font-size: 0.45em; opacity: 0.7; }
+    #unique-content-nv2026 .nv-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    #unique-content-nv2026 .nv-stat {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 3px solid var(--black);
+    }
+    #unique-content-nv2026 .nv-stat-met { background: #bbf7d0; }
+    #unique-content-nv2026 .nv-stat-partial { background: #fef08a; }
+    #unique-content-nv2026 .nv-stat-not { background: #fecaca; }
+    #unique-content-nv2026 .nv-stat-unk { background: #e5e7eb; }
+    #unique-content-nv2026 .nv-stat-na { background: var(--white); opacity: 0.8; }
+    #unique-content-nv2026 .nv-summary {
+      padding: 1rem;
+      border: var(--border);
+      background: var(--yellow);
+      font-weight: 700;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      margin-bottom: 1rem;
+    }
+    #unique-content-nv2026 .nv-section {
+      margin-bottom: 0.75rem;
+      border: 3px solid var(--black);
+    }
+    #unique-content-nv2026 .nv-section-hd {
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 0.88rem;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-bottom: 3px solid var(--black);
+      background: var(--white);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #unique-content-nv2026 .nv-section-hd:hover { background: var(--yellow); }
+    #unique-content-nv2026 .nv-section-bd {
+      display: none;
+      padding: 0.5rem;
+      max-height: 24rem;
+      overflow-y: auto;
+    }
+    #unique-content-nv2026 .nv-section.nv-open .nv-section-bd { display: block; }
+    #unique-content-nv2026 .nv-item {
+      padding: 0.65rem 0.75rem;
+      margin-bottom: 0.35rem;
+      border: 2px solid var(--black);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    #unique-content-nv2026 .nv-item:last-child { margin-bottom: 0; }
+    #unique-content-nv2026 .nv-item-met { background: #f0fdf4; }
+    #unique-content-nv2026 .nv-item-partial { background: #fefce8; }
+    #unique-content-nv2026 .nv-item-not_met { background: #fef2f2; }
+    #unique-content-nv2026 .nv-item-unknown { background: #f4f4f5; }
+    #unique-content-nv2026 .nv-item-na { background: var(--white); opacity: 0.75; }
+    #unique-content-nv2026 .nv-item-hd {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.5rem;
+      align-items: center;
+      margin-bottom: 0.35rem;
+    }
+    #unique-content-nv2026 .nv-pill {
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.45rem;
+      border: 2px solid var(--black);
+    }
+    #unique-content-nv2026 .nv-cat {
+      font-size: 0.72rem;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+    #unique-content-nv2026 .nv-reason {
+      margin: 0;
+      font-weight: 600;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    #unique-content-nv2026 .nv-alert {
+      margin-top: 0.75rem;
+      padding: 0.85rem 1rem;
+      border: var(--border);
+      font-weight: 700;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    #unique-content-nv2026 .nv-alert-err { background: #fecaca; }
+    #unique-content-nv2026 .nv-alert-info { background: #e0f2fe; }
+    #unique-content-nv2026 .nv-foot {
+      margin-top: 1.25rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+    #unique-content-nv2026 a { color: inherit; }
+    #unique-content-nv2026 .nv-hidden { display: none !important; }
+    #unique-content-nv2026 .nv-export-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+  </style>
+  <style id="nv-pdf-styles">
+    /* PDF 캡처: A4 본문 폭(210-10-10=190mm)에 맞춰 고정 → 좌/우 여백 균등 */
+    #nv-pdf-print-host {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 190mm;
+      max-width: 190mm;
+      /* 캡처 중 UI가 "반짝" 보이지 않게 뒤로 보냄 (html2canvas는 엘리먼트를 직접 렌더링) */
+      z-index: -1;
+      background: #fff;
+      overflow: visible;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+    .nv-pdf-capture-wrap {
+      width: 190mm;
+      max-width: 190mm;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .nv-pdf-sheet {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      font-family: "Pretendard Variable", Pretendard, "Malgun Gothic", sans-serif;
+      color: #000;
+      background: #fff;
+      font-size: 11px;
+      line-height: 1.45;
+      padding: 24px 28px 32px;
+      box-sizing: border-box;
+    }
+    .nv-pdf-sheet * { box-sizing: border-box; }
+    .nv-pdf-hd {
+      border: 3px solid #000;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      background: #facc15;
+    }
+    .nv-pdf-hd h1 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .nv-pdf-meta { margin: 0; font-size: 10px; font-weight: 600; opacity: 0.85; }
+    .nv-pdf-score {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      margin: 12px 0;
+      padding: 12px 14px;
+      border: 3px solid #000;
+    }
+    .nv-pdf-score-num { font-size: 42px; font-weight: 900; line-height: 1; margin: 0; }
+    .nv-pdf-score-num span { font-size: 18px; opacity: 0.65; }
+    .nv-pdf-stats { display: flex; flex-wrap: wrap; gap: 6px; }
+    .nv-pdf-stat {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border: 2px solid #000;
+      background: #fff;
+    }
+    .nv-pdf-summary {
+      margin: 0 0 14px;
+      padding: 10px 12px;
+      border: 2px solid #000;
+      font-weight: 600;
+      white-space: pre-wrap;
+    }
+    .nv-pdf-priority { margin-bottom: 14px; }
+    .nv-pdf-priority h2,
+    .nv-pdf-sec h2 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 3px solid #000;
+      padding-bottom: 4px;
+    }
+    .nv-pdf-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 9.5px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+    .nv-pdf-table th:nth-child(1) { width: 12%; }
+    .nv-pdf-table th:nth-child(2) { width: 14%; }
+    .nv-pdf-table th:nth-child(3) { width: 34%; }
+    .nv-pdf-table th:nth-child(4) { width: 40%; }
+    .nv-pdf-table th,
+    .nv-pdf-table td {
+      border: 1.5px solid #000;
+      padding: 5px 6px;
+      vertical-align: top;
+      text-align: left;
+    }
+    .nv-pdf-table th { background: #f4f4f5; font-weight: 800; }
+    .nv-pdf-hd,
+    .nv-pdf-score { page-break-inside: avoid; }
+    .nv-pdf-pill {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 900;
+      padding: 2px 5px;
+      border: 1.5px solid #000;
+      white-space: nowrap;
+    }
+    .nv-pdf-pill-met { background: #dcfce7; }
+    .nv-pdf-pill-partial { background: #fef9c3; }
+    .nv-pdf-pill-not_met { background: #fee2e2; }
+    .nv-pdf-pill-unknown { background: #f4f4f5; }
+    .nv-pdf-pill-na { background: #fff; opacity: 0.8; }
+    .nv-pdf-foot {
+      margin-top: 16px;
+      padding-top: 10px;
+      border-top: 2px solid #000;
+      font-size: 8px;
+      font-weight: 600;
+      opacity: 0.75;
+      line-height: 1.5;
+    }
+    .nv-pdf-sec { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div id="unique-content-nv2026">
+    <div class="nv-wrap">
+      <a class="nv-back" href="../../index.html">← Lab 목록</a>
+      <p class="nv-badge">KPF 부록 2 · Hugging Face</p>
+      <h1 class="nv-title">뉴스 사실확인 체크리스트 AI 검토 (Open)</h1>
+      <p class="nv-lead">Gemini 버전과 동일한 디자인·기능입니다. LLM만 Hugging Face Inference API(무료 티어)로 연결되어, API 한도 테스트에 적합합니다. 기사 본문을 붙여넣거나 URL로 불러온 뒤 223항 체크리스트를 검토하고 100점 만점 점수를 산출합니다.</p>
+
+      <section class="nv-card" aria-labelledby="nv-input-heading">
+        <h2 id="nv-input-heading">기사 입력</h2>
+        <div class="nv-tabs" role="tablist">
+          <button type="button" class="nv-tab" role="tab" id="tab-paste" aria-selected="true" aria-controls="panel-paste">본문 붙여넣기</button>
+          <button type="button" class="nv-tab" role="tab" id="tab-url" aria-selected="false" aria-controls="panel-url">URL로 불러오기</button>
+        </div>
+        <div id="panel-paste" class="nv-panel nv-on" role="tabpanel">
+          <label class="nv-label" for="nv-article">기사 전문</label>
+          <textarea id="nv-article" placeholder="제목·리드·본문을 그대로 붙여넣으세요."></textarea>
+        </div>
+        <div id="panel-url" class="nv-panel" role="tabpanel" hidden>
+          <label class="nv-label" for="nv-url">기사 URL</label>
+          <input type="url" id="nv-url" placeholder="https://..." inputmode="url" />
+          <p class="nv-hint">공개 기사는 Jina Reader(무료)로 본문을 추출합니다. 차단된 사이트는 붙여넣기 탭을 이용하세요.</p>
+          <div class="nv-actions">
+            <button type="button" class="nv-btn" id="nv-fetch-url">URL에서 본문 가져오기</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="nv-card" aria-labelledby="nv-api-heading">
+        <h2 id="nv-api-heading">AI 검토 설정</h2>
+        <p class="nv-hint" id="nv-api-status" style="margin-top:0">설정 확인 중…</p>
+        <div id="nv-key-override" class="nv-hidden" style="margin-top:0.75rem">
+          <label class="nv-label" for="nv-api-key">Hugging Face 토큰</label>
+          <input type="password" id="nv-api-key" autocomplete="off" placeholder="hf_..." />
+          <p class="nv-hint" id="nv-key-hint">
+            <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">Hugging Face</a> Read 권한 발급 ·
+            sessionStorage에만 저장 · Git에 올리지 마세요.
+          </p>
+        </div>
+        <div style="margin-top:0.75rem">
+          <label class="nv-label" for="nv-model">모델</label>
+          <select id="nv-model" style="width:100%;font-family:inherit;font-weight:700;padding:0.75rem;border:var(--border)">
+            <option value="Qwen/Qwen2.5-7B-Instruct" selected>Qwen/Qwen2.5-7B-Instruct (기본 · 무료 Inference 지원)</option>
+          </select>
+          <p class="nv-hint">현재 Hugging Face 무료 라우터에서 동작 확인된 모델입니다. 다른 모델은 400 오류가 날 수 있습니다.</p>
+        </div>
+        <button type="button" class="nv-btn nv-btn-primary" id="nv-analyze">체크리스트 AI 검토 시작</button>
+        <div class="nv-progress" id="nv-progress" aria-live="polite">
+          <div class="nv-progress-bar"><div class="nv-progress-fill" id="nv-progress-fill"></div></div>
+          <p class="nv-progress-text" id="nv-progress-text">준비 중…</p>
+        </div>
+        <div id="nv-error" class="nv-alert nv-alert-err nv-hidden" role="alert"></div>
+      </section>
+
+      <section class="nv-results nv-card" id="nv-results" aria-live="polite">
+        <h2>검토 결과</h2>
+        <div class="nv-score-ring">
+          <p class="nv-score-num" id="nv-score-display">—<span>/100</span></p>
+          <div class="nv-stats" id="nv-stats"></div>
+        </div>
+        <div class="nv-summary" id="nv-summary"></div>
+        <div id="nv-sections"></div>
+        <div class="nv-export-row">
+          <button type="button" class="nv-btn nv-btn-primary" id="nv-export-pdf">PDF 리포트 다운로드</button>
+          <button type="button" class="nv-btn" id="nv-export-pdf-print">PDF (인쇄/텍스트) 열기</button>
+          <button type="button" class="nv-btn" id="nv-export">결과 JSON보내기</button>
+        </div>
+      </section>
+
+      <div id="nv-pdf-root" aria-hidden="true"></div>
+
+      <p class="nv-foot">출처: 한국언론진흥재단 (2025). 뉴스 생산 과정의 사실 확인 및 검증 현황과 개선 방안, 부록 2. LLM: Hugging Face Inference API. Gemini 버전은 <a href="../news-verification/">뉴스 사실확인 (Gemini)</a>. 최종 책임은 기자·데스크에 있습니다.</p>
+    </div>
+  </div>
+
+  <script>
+    window.NVO_CONFIG = window.NVO_CONFIG || {
+      proxyUrl: "https://gemini-proxy.korea419.workers.dev",
+    };
+  </script>
+  <script src="config.public.open.js"></script>
+  <script>
+    (function () {
+      var status = document.getElementById("nv-api-status");
+      if (status) status.textContent = "스크립트 로딩 중…";
+      var s = document.createElement("script");
+      s.src = "news-verification-open.js?v=20260527-pdf5";
+      s.onload = function () {
+        if (!window.__NVO_APP_STARTED && status) {
+          status.innerHTML =
+            '<span style="color:#b91c1c">JS 로드됐지만 앱이 시작되지 않음.</span> F12 콘솔 오류 확인.';
+        }
+      };
+      s.onerror = function () {
+        if (status) {
+          status.innerHTML =
+            '<span style="color:#b91c1c">news-verification-open.js 로드 실패.</span> ' +
+            "GitHub 저장소에 파일이 있는지 확인하세요.";
+        }
+        var keyBox = document.getElementById("nv-key-override");
+        if (keyBox) keyBox.classList.remove("nv-hidden");
+      };
+      document.body.appendChild(s);
+    })();
+  </script>
+  <noscript>
+    <p style="padding:1rem;border:4px solid #000;background:#fecaca;font-weight:700">
+      이 페이지는 JavaScript가 필요합니다. 브라우저에서 JavaScript를 켜거나, 스크립트 차단 확장프로그램을 해제해 주세요.
+    </p>
+  </noscript>
+  
+</body>
+</html>

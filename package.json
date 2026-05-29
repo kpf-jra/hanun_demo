@@ -1,0 +1,12 @@
+{
+  "name": "visual-content",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check:pdf-align": "node apps/news-verification-open/tools/check-pdf-align.mjs"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.11.2"
+  }
+}

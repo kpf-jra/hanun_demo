@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDF Align Test</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: #f4f4f5;
+      }
+      .toolbar {
+        position: sticky;
+        top: 0;
+        background: #fff;
+        border-bottom: 2px solid #000;
+        padding: 10px 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        z-index: 10;
+      }
+      button {
+        font: inherit;
+        font-weight: 800;
+        border: 2px solid #000;
+        background: #facc15;
+        padding: 8px 10px;
+        cursor: pointer;
+      }
+      .stage {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 12px;
+      }
+      .panel {
+        background: #fff;
+        border: 2px solid #000;
+        padding: 10px;
+      }
+      .panel h2 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      /* Mirror production PDF capture host constraints */
+      #nv-pdf-print-host {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 190mm;
+        max-width: 190mm;
+        z-index: -1;
+        background: #fff;
+        overflow: visible;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        pointer-events: none;
+      }
+      .nv-pdf-capture-wrap {
+        width: 190mm;
+        max-width: 190mm;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .nv-pdf-sheet {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        color: #000;
+        background: #fff;
+        font-size: 12px;
+        line-height: 1.45;
+        padding: 24px 28px 32px;
+        box-sizing: border-box;
+      }
+      .nv-pdf-sheet * {
+        box-sizing: border-box;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .box {
+        border: 3px solid #000;
+        height: 60px;
+        background: #fff;
+      }
+      .box.yellow {
+        background: #facc15;
+      }
+      .box.gray {
+        background: #e5e7eb;
+      }
+      .rule {
+        height: 3px;
+        background: #000;
+        margin: 12px 0;
+      }
+      .text {
+        font-weight: 700;
+        margin: 0 0 8px;
+      }
+      canvas {
+        max-width: 100%;
+        height: auto;
+        border: 2px dashed #000;
+        background: #fff;
+      }
+      pre {
+        margin: 0;
+        padding: 8px;
+        border: 2px solid #000;
+        background: #f4f4f5;
+        overflow: auto;
+        font-size: 12px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button id="run">Capture & Measure</button>
+      <span id="status" style="font-weight: 800"></span>
+    </div>
+
+    <div class="stage">
+      <div class="panel">
+        <h2>Target element (sheet)</h2>
+        <div id="host"></div>
+      </div>
+      <div class="panel">
+        <h2>Captured canvas + measurements</h2>
+        <div id="out"></div>
+        <pre id="metrics"></pre>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const host = document.getElementById("host");
+        const out = document.getElementById("out");
+        const metricsEl = document.getElementById("metrics");
+        const statusEl = document.getElementById("status");
+
+        function buildSheet() {
+          const sheet = document.createElement("div");
+          sheet.className = "nv-pdf-sheet";
+          sheet.innerHTML = `
+            <div class="box yellow" style="width: 100%; height: 70px"></div>
+            <div class="rule"></div>
+            <div class="row">
+              <div class="box gray"></div>
+              <div class="box"></div>
+            </div>
+            <div class="rule"></div>
+            <p class="text">Left/Right alignment should be balanced.</p>
+            <p class="text">The content boxes are intentionally wide.</p>
+            <div class="box" style="width: 100%; height: 90px"></div>
+          `;
+          return sheet;
+        }
+
+        function mountForCapture(sheet) {
+          const printHost = document.createElement("div");
+          printHost.id = "nv-pdf-print-host";
+          const wrap = document.createElement("div");
+          wrap.className = "nv-pdf-capture-wrap";
+          wrap.appendChild(sheet);
+          printHost.appendChild(wrap);
+          document.body.appendChild(printHost);
+          return printHost;
+        }
+
+        function scanNonWhiteBounds(ctx, w, h) {
+          const img = ctx.getImageData(0, 0, w, h).data;
+          const isWhite = (i) =>
+            img[i] > 250 && img[i + 1] > 250 && img[i + 2] > 250 && img[i + 3] > 250;
+
+          let left = w,
+            right = -1,
+            top = h,
+            bottom = -1;
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              const i = (y * w + x) * 4;
+              if (!isWhite(i)) {
+                if (x < left) left = x;
+                if (x > right) right = x;
+                if (y < top) top = y;
+                if (y > bottom) bottom = y;
+              }
+            }
+          }
+          if (right < 0) return null;
+          return { left, right, top, bottom };
+        }
+
+        function pretty(n) {
+          return Math.round(n * 100) / 100;
+        }
+
+        document.getElementById("run").addEventListener("click", async () => {
+          statusEl.textContent = "capturing…";
+          out.innerHTML = "";
+          metricsEl.textContent = "";
+
+          const sheet = buildSheet();
+          host.innerHTML = "";
+          host.appendChild(sheet.cloneNode(true));
+
+          const liveSheet = buildSheet();
+          const printHost = mountForCapture(liveSheet);
+
+          await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+          const rect = liveSheet.getBoundingClientRect();
+          const captureW = Math.max(Math.ceil(rect.width), 680);
+          const captureH = Math.max(Math.ceil(rect.height), 200);
+
+          const canvas = await window.html2canvas(liveSheet, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            scrollX: 0,
+            scrollY: 0,
+            x: 0,
+            y: 0,
+            width: captureW,
+            height: captureH,
+            windowWidth: captureW,
+            windowHeight: captureH,
+            logging: false,
+          });
+
+          printHost.remove();
+          out.appendChild(canvas);
+
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          const bounds = scanNonWhiteBounds(ctx, canvas.width, canvas.height);
+          if (!bounds) {
+            metricsEl.textContent = "No non-white pixels detected.";
+            statusEl.textContent = "done";
+            return;
+          }
+
+          const leftMargin = bounds.left;
+          const rightMargin = canvas.width - 1 - bounds.right;
+          const marginDiff = Math.abs(leftMargin - rightMargin);
+          const marginDiffPct = (marginDiff / canvas.width) * 100;
+
+          metricsEl.textContent = JSON.stringify(
+            {
+              canvas: { w: canvas.width, h: canvas.height },
+              bounds,
+              leftMarginPx: leftMargin,
+              rightMarginPx: rightMargin,
+              marginDiffPx: marginDiff,
+              marginDiffPct: pretty(marginDiffPct),
+            },
+            null,
+            2
+          );
+
+          statusEl.textContent = "done";
+        });
+      })();
+    </script>
+  </body>
+</html>
+

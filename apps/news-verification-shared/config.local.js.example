@@ -1,0 +1,4 @@
+/** 로컬만: 각 앱 폴더의 config.public.js 다음에 로드 (config.local.js 로 복사, gitignore 됨) */
+window.NV_CONFIG = Object.assign(window.NV_CONFIG || {}, {
+  proxyUrl: "https://your-worker.workers.dev",
+});
