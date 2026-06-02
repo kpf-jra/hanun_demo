@@ -95,6 +95,28 @@
     return { html2canvasFn, JsPDF };
   }
 
+  /** A4 본문 폭(210−10−10=190mm)을 CSS 96dpi px로 고정 — mm·DPI·줌마다 달라지는 여백 방지 */
+  const PDF_MARGIN_MM = 10;
+  const PDF_INNER_W_PX = Math.round((190 * 96) / 25.4);
+
+  function mountPdfPrintHost(sheet) {
+    const printHost = document.createElement("div");
+    printHost.id = "nv-pdf-print-host";
+    printHost.style.width = PDF_INNER_W_PX + "px";
+    printHost.style.maxWidth = PDF_INNER_W_PX + "px";
+    const wrap = document.createElement("div");
+    wrap.className = "nv-pdf-capture-wrap";
+    wrap.style.width = PDF_INNER_W_PX + "px";
+    wrap.style.maxWidth = PDF_INNER_W_PX + "px";
+    sheet.style.width = "100%";
+    sheet.style.maxWidth = "100%";
+    sheet.style.margin = "0";
+    wrap.appendChild(sheet);
+    printHost.appendChild(wrap);
+    document.body.appendChild(printHost);
+    return printHost;
+  }
+
   /** A4 좌우 10mm 여백에 맞춰 캡처·페이지 분할 (html2pdf 자동 배치로 인한 치우침 방지) */
   async function exportPdfFromElement(rootEl, filename) {
     const { html2canvasFn, JsPDF } = getPdfLibs();
@@ -102,6 +124,8 @@
       throw new Error("PDF 라이브러리(html2canvas/jsPDF)를 찾을 수 없습니다.");
     }
     const scale = 2;
+    const captureW = PDF_INNER_W_PX;
+    const captureH = Math.max(Math.ceil(rootEl.scrollHeight), 200);
     const canvas = await html2canvasFn(rootEl, {
       scale,
       useCORS: true,
@@ -109,20 +133,32 @@
       logging: false,
       scrollX: 0,
       scrollY: 0,
+      x: 0,
+      y: 0,
+      width: captureW,
+      height: captureH,
+      windowWidth: captureW,
+      windowHeight: captureH,
     });
     const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const marginMm = 10;
-    const innerW = pageW - marginMm * 2;
-    const innerH = pageH - marginMm * 2;
+    const innerW = pageW - PDF_MARGIN_MM * 2;
+    const innerH = pageH - PDF_MARGIN_MM * 2;
     const imgData = canvas.toDataURL("image/jpeg", 0.92);
     const imgH = (canvas.height * innerW) / canvas.width;
     let offsetY = 0;
     let page = 0;
     while (offsetY < imgH - 0.5) {
       if (page > 0) pdf.addPage();
-      pdf.addImage(imgData, "JPEG", marginMm, marginMm - offsetY, innerW, imgH);
+      pdf.addImage(
+        imgData,
+        "JPEG",
+        PDF_MARGIN_MM,
+        PDF_MARGIN_MM - offsetY,
+        innerW,
+        imgH
+      );
       offsetY += innerH;
       page += 1;
     }
@@ -1044,45 +1080,11 @@ ${articleText.slice(0, 4000)}
 
     try {
       const sheet = buildPdfReportEl(lastResults);
-
-      printHost = document.createElement("div");
-      printHost.id = "nv-pdf-print-host";
-      const wrap = document.createElement("div");
-      wrap.className = "nv-pdf-capture-wrap";
-      wrap.appendChild(sheet);
-      printHost.appendChild(wrap);
-      document.body.appendChild(printHost);
+      printHost = mountPdfPrintHost(sheet);
 
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-      const captureW = Math.max(sheet.offsetWidth, sheet.scrollWidth, 680);
-      const captureH = Math.max(sheet.offsetHeight, sheet.scrollHeight, 200);
-
-      await html2pdf()
-        .set({
-          margin: [10, 10, 12, 10],
-          filename: pdfFilename(),
-          image: { type: "jpeg", quality: 0.92 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-            scrollX: 0,
-            scrollY: 0,
-            width: captureW,
-            height: captureH,
-            windowWidth: captureW,
-            windowHeight: captureH,
-          },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: {
-            mode: ["css", "legacy"],
-            before: ".nv-pdf-sec",
-            avoid: [".nv-pdf-hd", ".nv-pdf-score", ".nv-pdf-priority"],
-          },
-        })
-        .from(sheet)
-        .save();
+      await exportPdfFromElement(printHost, pdfFilename());
 
       setProgress(100, "PDF 저장 완료");
       setTimeout(hideProgress, 2000);

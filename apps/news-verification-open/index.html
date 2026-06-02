@@ -335,14 +335,13 @@
     }
   </style>
   <style id="nv-pdf-styles">
-    /* PDF 캡처: A4 본문 폭(210-10-10=190mm)에 맞춰 고정 → 좌/우 여백 균등 */
+    /* PDF 캡처: A4 본문 718px(=190mm@96dpi) 고정 — mm는 OS·브라우저마다 px 환산이 달라짐 */
     #nv-pdf-print-host {
       position: fixed;
       top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 190mm;
-      max-width: 190mm;
+      left: 0;
+      width: 718px;
+      max-width: 718px;
       /* 캡처 중 UI가 "반짝" 보이지 않게 뒤로 보냄 (html2canvas는 엘리먼트를 직접 렌더링) */
       z-index: -1;
       background: #fff;
@@ -353,8 +352,8 @@
       pointer-events: none;
     }
     .nv-pdf-capture-wrap {
-      width: 190mm;
-      max-width: 190mm;
+      width: 718px;
+      max-width: 718px;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -555,7 +554,7 @@
       var status = document.getElementById("nv-api-status");
       if (status) status.textContent = "스크립트 로딩 중…";
       var s = document.createElement("script");
-      s.src = "news-verification-open.js?v=20260527-pdf5";
+      s.src = "news-verification-open.js?v=20260529-pdf1";
       s.onload = function () {
         if (!window.__NVO_APP_STARTED && status) {
           status.innerHTML =

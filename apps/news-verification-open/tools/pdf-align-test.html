@@ -50,10 +50,9 @@
       #nv-pdf-print-host {
         position: fixed;
         top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 190mm;
-        max-width: 190mm;
+        left: 0;
+        width: 718px;
+        max-width: 718px;
         z-index: -1;
         background: #fff;
         overflow: visible;
@@ -63,8 +62,8 @@
         pointer-events: none;
       }
       .nv-pdf-capture-wrap {
-        width: 190mm;
-        max-width: 190mm;
+        width: 718px;
+        max-width: 718px;
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -168,11 +167,20 @@
           return sheet;
         }
 
+        const PDF_INNER_W_PX = Math.round((190 * 96) / 25.4);
+
         function mountForCapture(sheet) {
           const printHost = document.createElement("div");
           printHost.id = "nv-pdf-print-host";
+          printHost.style.width = PDF_INNER_W_PX + "px";
+          printHost.style.maxWidth = PDF_INNER_W_PX + "px";
           const wrap = document.createElement("div");
           wrap.className = "nv-pdf-capture-wrap";
+          wrap.style.width = PDF_INNER_W_PX + "px";
+          wrap.style.maxWidth = PDF_INNER_W_PX + "px";
+          sheet.style.width = "100%";
+          sheet.style.maxWidth = "100%";
+          sheet.style.margin = "0";
           wrap.appendChild(sheet);
           printHost.appendChild(wrap);
           document.body.appendChild(printHost);
@@ -221,11 +229,10 @@
 
           await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-          const rect = liveSheet.getBoundingClientRect();
-          const captureW = Math.max(Math.ceil(rect.width), 680);
-          const captureH = Math.max(Math.ceil(rect.height), 200);
+          const captureW = PDF_INNER_W_PX;
+          const captureH = Math.max(Math.ceil(printHost.scrollHeight), 200);
 
-          const canvas = await window.html2canvas(liveSheet, {
+          const canvas = await window.html2canvas(printHost, {
             scale: 2,
             useCORS: true,
             backgroundColor: "#ffffff",
