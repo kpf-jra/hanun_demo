@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PDF Export Test (news-verification)</title>
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; background: #f4f4f5; }
+      .toolbar { padding: 10px 12px; background: #fff; border-bottom: 2px solid #000; }
+      button { font-weight: 800; border: 2px solid #000; background: #facc15; padding: 8px 12px; cursor: pointer; }
+      pre { margin: 12px; padding: 10px; border: 2px solid #000; background: #fff; font-size: 12px; }
+      #nv-pdf-print-host {
+        position: fixed; top: 0; left: 0; width: 718px; max-width: 718px;
+        z-index: -1; background: #fff; overflow: visible; padding: 0; margin: 0;
+        box-sizing: border-box; pointer-events: none;
+      }
+      .nv-pdf-capture-wrap { width: 718px; max-width: 718px; margin: 0; padding: 0; box-sizing: border-box; }
+      .nv-pdf-sheet {
+        width: 100%; max-width: 100%; margin: 0; color: #000; background: #fff;
+        font-size: 9.5px; line-height: 1.45; padding: 24px 28px 32px; box-sizing: border-box;
+      }
+      .nv-pdf-sheet * { box-sizing: border-box; }
+      .nv-pdf-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 9.5px; }
+      .nv-pdf-table th, .nv-pdf-table td { border: 1.5px solid #000; padding: 5px 6px; vertical-align: top; }
+      .nv-pdf-table th { background: #f4f4f5; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button id="run">Run full PDF export test (223 rows)</button>
+      <span id="status" style="font-weight:800;margin-left:8px"></span>
+    </div>
+    <pre id="metrics">idle</pre>
+    <script>
+      (function () {
+        const PDF_MARGIN_MM = 10;
+        const PDF_INNER_W_PX = Math.round((190 * 96) / 25.4);
+        const PDF_MAX_CANVAS_PX = 16384;
+
+        function getPdfLibs() {
+          return {
+            html2canvasFn: window.html2canvas,
+            JsPDF:
+              (window.jspdf && window.jspdf.jsPDF) ||
+              window.jsPDF ||
+              (window.jspdf && window.jspdf.default),
+          };
+        }
+
+        function pdfInnerPageSizeMm(JsPDF) {
+          const probe = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+          const pageW = probe.internal.pageSize.getWidth();
+          const pageH = probe.internal.pageSize.getHeight();
+          return { innerW: pageW - PDF_MARGIN_MM * 2, innerH: pageH - PDF_MARGIN_MM * 2 };
+        }
+
+        function pdfPageCssHeight(innerW, innerH) {
+          return Math.floor((innerH / innerW) * PDF_INNER_W_PX);
+        }
+
+        function choosePdfScale(cssHeight) {
+          return cssHeight * 2 <= PDF_MAX_CANVAS_PX ? 2 : 1;
+        }
+
+        function mountPdfPrintHost(sheet) {
+          const printHost = document.createElement("div");
+          printHost.id = "nv-pdf-print-host";
+          printHost.style.width = PDF_INNER_W_PX + "px";
+          printHost.style.maxWidth = PDF_INNER_W_PX + "px";
+          const wrap = document.createElement("div");
+          wrap.className = "nv-pdf-capture-wrap";
+          wrap.style.width = PDF_INNER_W_PX + "px";
+          wrap.style.maxWidth = PDF_INNER_W_PX + "px";
+          sheet.style.width = "100%";
+          sheet.style.maxWidth = "100%";
+          sheet.style.margin = "0";
+          wrap.appendChild(sheet);
+          printHost.appendChild(wrap);
+          document.body.appendChild(printHost);
+          return printHost;
+        }
+
+        async function capturePdfSlice(rootEl, y, chunkH, scale) {
+          const { html2canvasFn } = getPdfLibs();
+          const totalH = Math.max(Math.ceil(rootEl.scrollHeight), chunkH);
+          return html2canvasFn(rootEl, {
+            scale,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: false,
+            scrollX: 0,
+            scrollY: 0,
+            width: PDF_INNER_W_PX,
+            height: chunkH,
+            windowWidth: PDF_INNER_W_PX,
+            windowHeight: totalH,
+            onclone: (doc) => {
+              const host = doc.getElementById("nv-pdf-print-host");
+              if (!host) return;
+              host.style.overflow = "hidden";
+              host.style.height = chunkH + "px";
+              const wrap = host.querySelector(".nv-pdf-capture-wrap");
+              if (wrap) wrap.style.transform = "translateY(-" + y + "px)";
+            },
+          });
+        }
+
+        function scanNonWhiteBounds(ctx, w, h) {
+          const img = ctx.getImageData(0, 0, w, h).data;
+          const isWhite = (i) =>
+            img[i] > 250 && img[i + 1] > 250 && img[i + 2] > 250 && img[i + 3] > 250;
+          let left = w, right = -1;
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              const i = (y * w + x) * 4;
+              if (!isWhite(i)) {
+                if (x < left) left = x;
+                if (x > right) right = x;
+              }
+            }
+          }
+          if (right < 0) return null;
+          return { left, right };
+        }
+
+        function buildMockSheet(rowCount) {
+          const rows = [];
+          for (let i = 0; i < rowCount; i++) {
+            rows.push(
+              "<tr><td>충족</td><td>분류" + (i % 7) +
+              "</td><td>체크리스트 항목 " + i +
+              " — 좌우 여백 균형 테스트용 긴 문장입니다.</td><td>근거 텍스트</td></tr>"
+            );
+          }
+          const el = document.createElement("div");
+          el.className = "nv-pdf-sheet";
+          el.innerHTML =
+            "<h1 style='margin:0 0 8px;font-size:18px'>PDF Export Test</h1>" +
+            "<table class='nv-pdf-table'><thead><tr><th>상태</th><th>분류</th><th>항목</th><th>근거</th></tr></thead><tbody>" +
+            rows.join("") +
+            "</tbody></table>";
+          return el;
+        }
+
+        async function exportPdf(rootEl) {
+          const { JsPDF } = getPdfLibs();
+          const totalH = Math.max(Math.ceil(rootEl.scrollHeight), 200);
+          const { innerW, innerH } = pdfInnerPageSizeMm(JsPDF);
+          const pageCssH = pdfPageCssHeight(innerW, innerH);
+          const scale = choosePdfScale(pageCssH);
+          const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+          let pageIdx = 0;
+          let firstCanvas = null;
+          for (let y = 0; y < totalH; y += pageCssH) {
+            const chunkH = Math.min(pageCssH, totalH - y);
+            const canvas = await capturePdfSlice(rootEl, y, chunkH, scale);
+            if (!firstCanvas) firstCanvas = canvas;
+            const imgData = canvas.toDataURL("image/jpeg", 0.92);
+            const drawH = (canvas.height * innerW) / canvas.width;
+            if (pageIdx > 0) pdf.addPage();
+            pdf.addImage(imgData, "JPEG", PDF_MARGIN_MM, PDF_MARGIN_MM, innerW, drawH);
+            pageIdx += 1;
+          }
+          const blob = pdf.output("blob");
+          return { blob, pageCount: pageIdx, firstCanvas, scale, totalH, pageCssH };
+        }
+
+        async function runTest() {
+          const statusEl = document.getElementById("status");
+          const metricsEl = document.getElementById("metrics");
+          statusEl.textContent = "running…";
+          metricsEl.textContent = "";
+          let host = null;
+          try {
+            if (!getPdfLibs().html2canvasFn || !getPdfLibs().JsPDF) {
+              throw new Error("html2canvas/jsPDF not loaded");
+            }
+            const sheet = buildMockSheet(223);
+            host = mountPdfPrintHost(sheet);
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+            const out = await exportPdf(host);
+            const ctx = out.firstCanvas.getContext("2d", { willReadFrequently: true });
+            const bounds = scanNonWhiteBounds(ctx, out.firstCanvas.width, out.firstCanvas.height);
+            if (!bounds) throw new Error("No content captured on first page");
+            const leftMargin = bounds.left;
+            const rightMargin = out.firstCanvas.width - 1 - bounds.right;
+            const marginDiffPct = (Math.abs(leftMargin - rightMargin) / out.firstCanvas.width) * 100;
+            metricsEl.textContent = JSON.stringify({
+              ok: out.blob.size > 5000 && out.pageCount >= 5 && marginDiffPct <= 2,
+              blobBytes: out.blob.size,
+              pageCount: out.pageCount,
+              scale: out.scale,
+              totalHeightPx: out.totalH,
+              pageCssHeightPx: out.pageCssH,
+              firstCanvas: { w: out.firstCanvas.width, h: out.firstCanvas.height },
+              leftMarginPx: leftMargin,
+              rightMarginPx: rightMargin,
+              marginDiffPct: Math.round(marginDiffPct * 100) / 100,
+            }, null, 2);
+            statusEl.textContent = "done";
+          } catch (err) {
+            metricsEl.textContent = JSON.stringify({ ok: false, error: String(err.message || err) }, null, 2);
+            statusEl.textContent = "error";
+          } finally {
+            if (host && host.parentNode) host.parentNode.removeChild(host);
+          }
+        }
+
+        document.getElementById("run").addEventListener("click", runTest);
+        window.addEventListener("load", () => {
+          setTimeout(runTest, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

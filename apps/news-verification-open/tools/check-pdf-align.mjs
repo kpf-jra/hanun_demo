@@ -12,6 +12,7 @@ import fs from "fs";
 import puppeteer from "puppeteer";
 
 const URL =
+  process.env.PDF_ALIGN_TEST_URL ||
   "http://localhost:3456/apps/news-verification-open/tools/pdf-align-test.html";
 
 function pct(n) {

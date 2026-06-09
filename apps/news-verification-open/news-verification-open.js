@@ -21,8 +21,10 @@
   const PROXY_BASE = (NVO.proxyUrl || "").replace(/\/$/, "");
   const STORAGE_KEY = "nvo-hf-token";
   const DEFAULT_MODEL = "Qwen/Qwen2.5-7B-Instruct";
-  const HTML2PDF_URL =
-    "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js";
+  const PDF_LIB_URLS = [
+    "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js",
+    "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
+  ];
 
   function needsUserKey() {
     return !serverHasKey;
@@ -69,20 +71,32 @@
     }
   }
 
-  let html2pdfLoadPromise = null;
-  function loadHtml2Pdf() {
-    if (window.html2pdf) return Promise.resolve();
-    if (html2pdfLoadPromise) return html2pdfLoadPromise;
-    html2pdfLoadPromise = new Promise((resolve, reject) => {
+  let pdfLibsLoadPromise = null;
+  function loadScript(url) {
+    return new Promise((resolve, reject) => {
       const s = document.createElement("script");
-      s.src = HTML2PDF_URL;
+      s.src = url;
       s.crossOrigin = "anonymous";
-      s.onload = () =>
-        window.html2pdf ? resolve() : reject(new Error("html2pdf 로드 실패"));
-      s.onerror = () => reject(new Error("PDF 라이브러리 CDN 연결 실패"));
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error("PDF 라이브러리 CDN 연결 실패: " + url));
       document.head.appendChild(s);
     });
-    return html2pdfLoadPromise;
+  }
+
+  function loadHtml2Pdf() {
+    if (getPdfLibs().html2canvasFn && getPdfLibs().JsPDF) {
+      return Promise.resolve();
+    }
+    if (pdfLibsLoadPromise) return pdfLibsLoadPromise;
+    pdfLibsLoadPromise = (async () => {
+      for (const url of PDF_LIB_URLS) {
+        await loadScript(url);
+      }
+      if (!getPdfLibs().html2canvasFn || !getPdfLibs().JsPDF) {
+        throw new Error("PDF 라이브러리(html2canvas/jsPDF)를 찾을 수 없습니다.");
+      }
+    })();
+    return pdfLibsLoadPromise;
   }
 
   function getPdfLibs() {
@@ -97,6 +111,7 @@
   /** A4 본문 폭(210−10−10=190mm)을 CSS 96dpi px로 고정 — mm·DPI·줌마다 달라지는 여백 방지 */
   const PDF_MARGIN_MM = 10;
   const PDF_INNER_W_PX = Math.round((190 * 96) / 25.4);
+  const PDF_MAX_CANVAS_PX = 16384;
 
   function mountPdfPrintHost(sheet) {
     const printHost = document.createElement("div");
@@ -116,51 +131,114 @@
     return printHost;
   }
 
-  async function exportPdfFromElement(rootEl, filename) {
-    const { html2canvasFn, JsPDF } = getPdfLibs();
-    if (!html2canvasFn || !JsPDF) {
-      throw new Error("PDF 라이브러리(html2canvas/jsPDF)를 찾을 수 없습니다.");
+  function pdfInnerPageSizeMm(JsPDF) {
+    const probe = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+    const pageW = probe.internal.pageSize.getWidth();
+    const pageH = probe.internal.pageSize.getHeight();
+    return {
+      innerW: pageW - PDF_MARGIN_MM * 2,
+      innerH: pageH - PDF_MARGIN_MM * 2,
+    };
+  }
+
+  function pdfPageCssHeight(innerW, innerH) {
+    return Math.floor((innerH / innerW) * PDF_INNER_W_PX);
+  }
+
+  function choosePdfScale(cssHeight) {
+    return cssHeight * 2 <= PDF_MAX_CANVAS_PX ? 2 : 1;
+  }
+
+  async function beginPdfSaveDialog(filename) {
+    if (!window.showSaveFilePicker) return null;
+    try {
+      return await window.showSaveFilePicker({
+        suggestedName: filename,
+        types: [{ description: "PDF", accept: { "application/pdf": [".pdf"] } }],
+      });
+    } catch (err) {
+      if (err && err.name === "AbortError") {
+        const cancel = new Error("PDF 저장이 취소되었습니다.");
+        cancel.name = "AbortError";
+        throw cancel;
+      }
+      return null;
     }
-    const scale = 2;
-    const captureW = PDF_INNER_W_PX;
-    const captureH = Math.max(Math.ceil(rootEl.scrollHeight), 200);
-    const canvas = await html2canvasFn(rootEl, {
+  }
+
+  async function commitPdfSave(pdf, filename, fileHandle) {
+    const blob = pdf.output("blob");
+    if (fileHandle) {
+      const w = await fileHandle.createWritable();
+      await w.write(blob);
+      await w.close();
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }
+
+  async function capturePdfSlice(rootEl, y, chunkH, scale) {
+    const { html2canvasFn } = getPdfLibs();
+    const totalH = Math.max(Math.ceil(rootEl.scrollHeight), chunkH);
+    return html2canvasFn(rootEl, {
       scale,
       useCORS: true,
       backgroundColor: "#ffffff",
       logging: false,
       scrollX: 0,
       scrollY: 0,
-      x: 0,
-      y: 0,
-      width: captureW,
-      height: captureH,
-      windowWidth: captureW,
-      windowHeight: captureH,
+      width: PDF_INNER_W_PX,
+      height: chunkH,
+      windowWidth: PDF_INNER_W_PX,
+      windowHeight: totalH,
+      onclone: (doc) => {
+        const host = doc.getElementById("nv-pdf-print-host");
+        if (!host) return;
+        host.style.overflow = "hidden";
+        host.style.height = chunkH + "px";
+        const wrap = host.querySelector(".nv-pdf-capture-wrap");
+        if (wrap) {
+          wrap.style.transform = "translateY(-" + y + "px)";
+        }
+      },
     });
-    const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-    const innerW = pageW - PDF_MARGIN_MM * 2;
-    const innerH = pageH - PDF_MARGIN_MM * 2;
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
-    const imgH = (canvas.height * innerW) / canvas.width;
-    let offsetY = 0;
-    let page = 0;
-    while (offsetY < imgH - 0.5) {
-      if (page > 0) pdf.addPage();
-      pdf.addImage(
-        imgData,
-        "JPEG",
-        PDF_MARGIN_MM,
-        PDF_MARGIN_MM - offsetY,
-        innerW,
-        imgH
-      );
-      offsetY += innerH;
-      page += 1;
+  }
+
+  async function exportPdfFromElement(rootEl, filename, fileHandle) {
+    const { html2canvasFn, JsPDF } = getPdfLibs();
+    if (!html2canvasFn || !JsPDF) {
+      throw new Error("PDF 라이브러리(html2canvas/jsPDF)를 찾을 수 없습니다.");
     }
-    pdf.save(filename);
+
+    const totalH = Math.max(Math.ceil(rootEl.scrollHeight), 200);
+    const { innerW, innerH } = pdfInnerPageSizeMm(JsPDF);
+    const pageCssH = pdfPageCssHeight(innerW, innerH);
+    const scale = choosePdfScale(pageCssH);
+    const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+
+    let pageIdx = 0;
+    for (let y = 0; y < totalH; y += pageCssH) {
+      const chunkH = Math.min(pageCssH, totalH - y);
+      const canvas = await capturePdfSlice(rootEl, y, chunkH, scale);
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      const drawH = (canvas.height * innerW) / canvas.width;
+      if (pageIdx > 0) pdf.addPage();
+      pdf.addImage(imgData, "JPEG", PDF_MARGIN_MM, PDF_MARGIN_MM, innerW, drawH);
+      pageIdx += 1;
+    }
+
+    if (pageIdx === 0) {
+      throw new Error("PDF에 담을 내용이 없습니다.");
+    }
+    await commitPdfSave(pdf, filename, fileHandle);
   }
 
   const CHECKLIST_URL = "../news-verification-shared/news-verification-items.json";
@@ -1075,6 +1153,18 @@ ${articleText.slice(0, 4000)}
     btn.disabled = true;
     btn.textContent = "PDF 준비 중…";
 
+    const fname = pdfFilename();
+    let fileHandle = null;
+    try {
+      fileHandle = await beginPdfSaveDialog(fname);
+    } catch (e) {
+      if (e && e.name === "AbortError") {
+        btn.disabled = false;
+        btn.textContent = prev;
+        return;
+      }
+    }
+
     try {
       await loadHtml2Pdf();
     } catch (e) {
@@ -1094,7 +1184,7 @@ ${articleText.slice(0, 4000)}
 
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-      await exportPdfFromElement(printHost, pdfFilename());
+      await exportPdfFromElement(printHost, fname, fileHandle);
 
       setProgress(100, "PDF 저장 완료");
       setTimeout(hideProgress, 2000);

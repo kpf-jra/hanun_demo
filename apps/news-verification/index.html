@@ -360,7 +360,8 @@
     }
     .nv-pdf-sheet {
       width: 100%;
-      margin: 0 auto;
+      max-width: 100%;
+      margin: 0;
       font-family: "Pretendard Variable", Pretendard, "Malgun Gothic", sans-serif;
       color: #000;
       background: #fff;
@@ -554,7 +555,7 @@
       var status = document.getElementById("nv-api-status");
       if (status) status.textContent = "스크립트 로딩 중…";
       var s = document.createElement("script");
-      s.src = "news-verification.js?v=20260529-pdf1";
+      s.src = "news-verification.js?v=20260609-pdf3";
       s.onload = function () {
         if (!window.__NV_APP_STARTED && status) {
           status.innerHTML =
