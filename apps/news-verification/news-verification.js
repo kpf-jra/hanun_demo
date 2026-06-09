@@ -267,8 +267,9 @@
         throw new Error(cfgText || "설정 응답이 JSON이 아닙니다.");
       }
       serverHasKey = Boolean(cfg.geminiConfigured);
-      if (modelEl.querySelector('option[value="gemini-flash-latest"]')) {
-        modelEl.value = "gemini-flash-latest";
+      const def = cfg.defaultModel || "gemini-2.5-flash-lite";
+      if (modelEl.querySelector('option[value="' + def + '"]')) {
+        modelEl.value = def;
       }
       if (serverHasKey) {
         apiStatusEl.textContent = IS_LOCAL
@@ -279,7 +280,7 @@
         loadStoredApiKey();
         apiStatusEl.innerHTML = IS_LOCAL
           ? '.env에 <code>gemini_api_key</code>가 없습니다. 아래에 키를 입력하거나 .env 설정 후 <code>node server.mjs</code> 재시작.'
-          : '본인 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Gemini API 키</a>를 입력하세요. (기본 모델: gemini-flash-latest)';
+          : '본인 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Gemini API 키</a>를 입력하세요. (기본 모델: gemini-2.5-flash-lite)';
         keyOverrideEl.classList.remove("nv-hidden");
       }
     } catch (err) {

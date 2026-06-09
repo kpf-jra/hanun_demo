@@ -502,16 +502,16 @@
           <label class="nv-label" for="nv-api-key">Gemini API 키</label>
           <input type="password" id="nv-api-key" autocomplete="off" placeholder="AIza..." />
           <p class="nv-hint" id="nv-key-hint">
-            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> 무료 발급 ·
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>에서 발급 ·
             sessionStorage에만 저장 · Git에 올리지 마세요.
           </p>
         </div>
         <div style="margin-top:0.75rem">
           <label class="nv-label" for="nv-model">모델</label>
           <select id="nv-model" style="width:100%;font-family:inherit;font-weight:700;padding:0.75rem;border:var(--border)">
-            <option value="gemini-flash-latest" selected>gemini-flash-latest (기본)</option>
+            <option value="gemini-2.5-flash-lite" selected>gemini-2.5-flash-lite (기본·가장 저렴)</option>
             <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-            <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (가볍고 빠름)</option>
+            <option value="gemini-flash-latest">gemini-flash-latest (최신 Flash)</option>
             <option value="gemini-2.0-flash">gemini-2.0-flash (일부 키는 할당 0)</option>
           </select>
         </div>

@@ -213,7 +213,7 @@ function sendConfig(res) {
       defaultModel:
         process.env.GEMINI_MODEL ||
         process.env.gemini_model ||
-        "gemini-flash-latest",
+        "gemini-2.5-flash-lite",
     })
   );
 }

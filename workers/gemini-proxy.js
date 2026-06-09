@@ -45,7 +45,7 @@ async function handleRequest(request, env) {
     const hasShared = Boolean(sharedKey);
     return json({
       geminiConfigured: hasShared,
-      defaultModel: (env && env.GEMINI_MODEL) || "gemini-flash-latest",
+      defaultModel: (env && env.GEMINI_MODEL) || "gemini-2.5-flash-lite",
       mode: hasShared ? "shared_key" : "bring_your_own_key",
     });
   }
