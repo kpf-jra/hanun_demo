@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>기자가 알아야 할 올바른 우리말 테스트</title>
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="../../assets/lab-demo-header.css" />
   <script type="application/json" id="uc-bank-json">
 [{"wrong":["유명세를 탔다","떨쳤다","누렸다","얻었다"],"right":["유명세를 치렀다","유명세가 따랐다","명성을 얻었다"],"explain":"‘유명세’는 이름이 알려져 겪는 불편이나 곤욕을 뜻한다."},{"wrong":["금도를 넘었다","금도를 지켜라"],"right":["선을 넘었다","도를 넘었다","선을 지켜라"],"explain":"‘금도’는 포용할 만한 도량을 뜻한다."},{"wrong":["국가 안위가 위태롭다","안위를 도모한다"],"right":["안전","안녕","보위 등으로 고쳐 쓴다"],"explain":"‘안위’는 편안함과 위태함을 함께 이르는 말이다."},{"wrong":["존망이 위태롭다"],"right":["존속이 위태롭다"],"explain":"‘존망’은 존속과 멸망을 아울러 이른다."},{"wrong":["생사가 위태롭다"],"right":["목숨이 위태롭다","생사의 갈림길에 섰다"],"explain":"‘생사’는 삶과 죽음을 아울러 이른다."},{"wrong":["애환을 달래다","치유하다"],"right":["슬픔을 달래다","시름을 덜다","아픔을 위로하다"],"explain":"‘애환’은 슬픔과 기쁨을 함께 이르는 말이다."},{"wrong":["접수했다","접수시켰다"],"right":["제출했다","제출하게 했다"],"explain":"접수는 받는 쪽, 제출은 내는 쪽 표현이다."},{"wrong":["수납했다"],"right":["납부했다"],"explain":"수납은 받는 행위, 납부는 내는 행위다."},{"wrong":["임대료를 냈다"],"right":["임차료를 냈다"],"explain":"빌리는 쪽은 임차료를 낸다."},{"wrong":["난이도가 높다","고난이도"],"right":["난도가 높다","고난도"],"explain":"‘난이도’는 어려움과 쉬움의 정도를 함께 이르는 말이다."},{"wrong":["사사를 받았다"],"right":["사사했다"],"explain":"‘사사하다’는 스승으로 삼아 배운다는 뜻이다."},{"wrong":["자문을 구했다","자문을 받았다"],"right":["자문했다"],"explain":"자문은 묻는 행위다."},{"wrong":["사열을 받았다"],"right":["사열했다"],"explain":"사열은 부대나 의장대를 살펴보는 것이다."},{"wrong":["진위 여부"],"right":["진위"],"explain":"진위에 이미 참과 거짓의 뜻이 들어 있다."},{"wrong":["생사 여부"],"right":["생존 여부","사망 여부"],"explain":"생사에 이미 상반된 두 개념이 함께 들어 있다."},{"wrong":["피로회복"],"right":["피로해소"],"explain":"피로를 회복한다고 하지 않는다."},{"wrong":["대첩이 벌어진다"],"right":["대결이 벌어진다","대전이 벌어진다"],"explain":"대첩은 이미 크게 이긴 뒤를 뜻한다."},{"wrong":["3당 등극","2대 주주 등극","8위 등극"],"right":["3당에 올랐다","2대 주주가 됐다","8위에 올랐다"],"explain":"‘등극’은 가장 높은 자리에 오를 때 쓰는 말이다."}]
   </script>
@@ -47,49 +48,6 @@
     #unique-content-991201 .uc-inner {
       max-width: 36rem;
       margin: 0 auto;
-    }
-    #unique-content-991201 .uc-mast {
-      margin-bottom: 1rem;
-    }
-    #unique-content-991201 .uc-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.45rem 1rem;
-      font-weight: 800;
-      font-size: 0.82rem;
-      text-decoration: none;
-      color: var(--black);
-      border: var(--border);
-      box-shadow: 8px 8px 0 var(--yellow);
-      background: var(--white);
-      transition: transform 0.8s var(--ease), box-shadow 0.8s var(--ease);
-    }
-    #unique-content-991201 .uc-back:hover {
-      transform: translate(-3px, -3px);
-      box-shadow: 12px 12px 0 var(--yellow);
-    }
-    #unique-content-991201 .uc-back:focus-visible {
-      outline: 3px solid var(--green-a11y);
-      outline-offset: 3px;
-    }
-    #unique-content-991201 .uc-badge {
-      display: inline-block;
-      margin: 0 0 0.5rem;
-      padding: 0.25rem 0.55rem;
-      font-size: 0.68rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: var(--yellow);
-      border: 3px solid var(--black);
-    }
-    #unique-content-991201 .uc-title {
-      margin: 0;
-      font-size: clamp(1.35rem, 1.1rem + 1.8vw, 1.85rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
     }
     #unique-content-991201 .uc-lead {
       margin: 0.65rem 0 0;
@@ -259,7 +217,7 @@
     @media (prefers-reduced-motion: reduce) {
       #unique-content-991201.uc-shake { animation: none; }
       #unique-content-991201 .uc-btn,
-      #unique-content-991201 .uc-back { transition: none; }
+      #unique-content-991201 .uc-btn { transition: none; }
     }
   </style>
 </head>
@@ -267,15 +225,16 @@
   <div id="unique-content-991201">
     <div id="uc-fw-layer" aria-hidden="true"><canvas id="uc-fw-canvas-inner"></canvas></div>
 
-    <div class="uc-inner">
-      <div class="uc-mast">
-        <a class="uc-back" href="../../index.html">← Lab</a>
+    <div class="ldh-mast">
+      <div>
+        <p class="ldh-kicker">Quiz · 기자교육</p>
+        <h1 class="ldh-title">기자를 위한 우리말 테스트</h1>
       </div>
+      <a class="ldh-back" href="../../index.html">← Lab</a>
+    </div>
+    <p class="ldh-lead">기사·브리핑에서 자주 섞어 쓰는 표현을 골라 냈습니다. 제시되는 <strong>한 문장</strong>만 보고, 기사에 그대로 써도 되는 말이면 <strong>○</strong>, 고쳐 써야 하면 <strong>×</strong>를 눌러 주세요. 총 <strong>10문항</strong>입니다.</p>
 
-      <span class="uc-badge">기자 교육 · 우리말</span>
-      <h1 class="uc-title">기자가 알아야 할<br />올바른 우리말 테스트</h1>
-      <p class="uc-lead">기사·브리핑에서 자주 섞어 쓰는 표현을 골라 냈습니다. 제시되는 <strong>한 문장</strong>만 보고, 기사에 그대로 써도 되는 말이면 <strong>○</strong>, 고쳐 써야 하면 <strong>×</strong>를 눌러 주세요. 총 <strong>10문항</strong>입니다.</p>
-
+    <div class="uc-inner">
       <section id="uc-screen-intro" class="uc-card" aria-labelledby="uc-intro-heading">
         <h2 id="uc-intro-heading" class="uc-prompt">준비되셨나요?</h2>
         <p class="uc-lead" style="margin-top:0">문항은 <strong>무작위 10개</strong>입니다. 각 문항마다 잘못 쓴 예 또는 바로잡은 예 가운데 하나가 임의로 나옵니다.</p>

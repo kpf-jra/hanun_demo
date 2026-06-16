@@ -1,0 +1,48 @@
+/* Visual AI Content Lab — shared demo page header */
+.ldh-mast {
+  max-width: 58rem;
+  margin: 0 auto 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+.ldh-back {
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: var(--black, #000);
+  text-decoration: none;
+  padding: 0.4rem 0.85rem;
+  border: var(--border, 4px solid #000);
+  box-shadow: 6px 6px 0 var(--yellow, #facc15);
+  background: var(--white, #fff);
+  flex-shrink: 0;
+}
+.ldh-back:hover,
+.ldh-back:focus-visible {
+  background: var(--yellow, #facc15);
+  outline: none;
+}
+.ldh-kicker {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 900;
+  margin: 0 0 0.35rem;
+}
+.ldh-title {
+  margin: 0;
+  font-weight: 900;
+  font-size: clamp(1.4rem, 1.15rem + 1.3vw, 1.9rem);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.ldh-lead {
+  max-width: 58rem;
+  margin: 0 auto 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.55;
+  opacity: 0.88;
+}

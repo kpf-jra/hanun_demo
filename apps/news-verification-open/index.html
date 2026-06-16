@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>뉴스 사실확인 체크리스트 — AI 검토 (Open / HF)</title>
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="../../assets/lab-demo-header.css" />
   <style>
     #unique-content-nv2026,
     #unique-content-nv2026 * { box-sizing: border-box; max-width: 100%; }
@@ -28,49 +29,6 @@
     #unique-content-nv2026 .nv-wrap {
       max-width: 52rem;
       margin: 0 auto;
-    }
-    #unique-content-nv2026 .nv-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.45rem 1rem;
-      font-weight: 800;
-      font-size: 0.82rem;
-      text-decoration: none;
-      color: var(--black);
-      border: var(--border);
-      box-shadow: 8px 8px 0 var(--yellow);
-      background: var(--white);
-      transition: transform 0.8s var(--ease), box-shadow 0.8s var(--ease);
-    }
-    #unique-content-nv2026 .nv-back:hover {
-      transform: translate(-3px, -3px);
-      box-shadow: 12px 12px 0 var(--yellow);
-    }
-    #unique-content-nv2026 .nv-badge {
-      display: inline-block;
-      margin: 0.75rem 0 0.5rem;
-      padding: 0.25rem 0.55rem;
-      font-size: 0.68rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: var(--yellow);
-      border: 3px solid var(--black);
-    }
-    #unique-content-nv2026 .nv-title {
-      margin: 0;
-      font-size: clamp(1.35rem, 1.1rem + 1.8vw, 1.95rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-    }
-    #unique-content-nv2026 .nv-lead {
-      margin: 0.65rem 0 0;
-      font-weight: 600;
-      font-size: 0.92rem;
-      line-height: 1.55;
-      opacity: 0.9;
     }
     #unique-content-nv2026 .nv-card {
       margin-top: 1rem;
@@ -470,12 +428,16 @@
 </head>
 <body>
   <div id="unique-content-nv2026">
-    <div class="nv-wrap">
-      <a class="nv-back" href="../../index.html">← Lab 목록</a>
-      <p class="nv-badge">KPF 부록 2 · Hugging Face</p>
-      <h1 class="nv-title">뉴스 사실확인 체크리스트 AI 검토 (Open)</h1>
-      <p class="nv-lead">Gemini 버전과 동일한 디자인·기능입니다. LLM만 Hugging Face Inference API(무료 티어)로 연결되어, API 한도 테스트에 적합합니다. 기사 본문을 붙여넣거나 URL로 불러온 뒤 223항 체크리스트를 검토하고 100점 만점 점수를 산출합니다.</p>
+    <div class="ldh-mast">
+      <div>
+        <p class="ldh-kicker">AI tool · 공개 체험</p>
+        <h1 class="ldh-title">뉴스 사실확인 체크리스트 (공개)</h1>
+      </div>
+      <a class="ldh-back" href="../../index.html">← Lab</a>
+    </div>
+    <p class="ldh-lead">위와 같은 기능을 누구나 바로 체험할 수 있는 공개 데모입니다. 기사 본문을 붙여넣거나 URL로 불러온 뒤 사실확인 항목별로 AI가 검토합니다.</p>
 
+    <div class="nv-wrap">
       <section class="nv-card" aria-labelledby="nv-input-heading">
         <h2 id="nv-input-heading">기사 입력</h2>
         <div class="nv-tabs" role="tablist">

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>test.xlsx — 표 · 차트 연동 데모</title>
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="../../assets/lab-demo-header.css" />
   <style>
     #unique-content-572901,
     #unique-content-572901 * {
@@ -27,88 +28,9 @@
       padding: clamp(0.75rem, 3vw, 1.25rem);
       padding-bottom: clamp(2rem, 5vw, 3rem);
     }
-    #unique-content-572901 .uc-mast {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: clamp(1rem, 3vw, 1.5rem);
-    }
-    #unique-content-572901 .uc-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.55rem 1.1rem;
-      font-weight: 800;
-      font-size: 0.85rem;
-      text-decoration: none;
-      color: var(--black);
-      background: var(--white);
-      border: var(--border);
-      box-shadow: 10px 10px 0 var(--yellow);
-      transition: transform 0.8s var(--ease-ui), box-shadow 0.8s var(--ease-ui), background 0.35s ease;
-    }
-    #unique-content-572901 .uc-back:hover,
-    #unique-content-572901 .uc-back:focus-visible {
-      transform: translate(-4px, -4px);
-      box-shadow: 14px 14px 0 var(--yellow);
-      background: var(--yellow);
-      outline: none;
-    }
-    #unique-content-572901 .uc-back:active {
-      transform: translate(3px, 3px);
-      box-shadow: 6px 6px 0 var(--yellow);
-    }
-    #unique-content-572901 .uc-back:focus-visible {
-      outline: 3px solid var(--green-a11y);
-      outline-offset: 3px;
-    }
-    #unique-content-572901 .uc-back-ico {
-      width: 2rem;
-      height: 2rem;
-      display: grid;
-      place-items: center;
-      border: 3px solid var(--black);
-      background: var(--black);
-      color: var(--yellow);
-      font-weight: 900;
-    }
-    #unique-content-572901 .uc-back:hover .uc-back-ico,
-    #unique-content-572901 .uc-back:focus-visible .uc-back-ico {
-      background: var(--white);
-      color: var(--black);
-    }
     #unique-content-572901 .uc-inner {
       max-width: min(1120px, 100%);
       margin: 0 auto;
-    }
-    #unique-content-572901 .uc-kicker {
-      margin: 0 0 0.4rem;
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-    #unique-content-572901 .uc-title {
-      margin: 0;
-      font-size: clamp(1.35rem, 1.05rem + 1.5vw, 1.95rem);
-      font-weight: 900;
-      letter-spacing: -0.035em;
-      line-height: 1.12;
-    }
-    #unique-content-572901 .uc-title em {
-      font-style: normal;
-      background: var(--yellow);
-      border: 3px solid var(--black);
-      padding: 0.05em 0.35em;
-      box-shadow: 6px 6px 0 var(--black);
-    }
-    #unique-content-572901 .uc-sub {
-      margin: 0.75rem 0 0;
-      max-width: 40rem;
-      font-weight: 600;
-      opacity: 0.88;
-      line-height: 1.6;
     }
     #unique-content-572901 .uc-toolbar {
       display: flex;
@@ -327,27 +249,24 @@
       flex-shrink: 0;
     }
     @media (prefers-reduced-motion: reduce) {
-      #unique-content-572901 .uc-back,
       #unique-content-572901 .uc-btn,
       #unique-content-572901 tbody tr { transition: none; }
-      #unique-content-572901 .uc-back:hover,
       #unique-content-572901 .uc-btn:hover { transform: none; }
     }
   </style>
 </head>
 <body>
   <div id="unique-content-572901">
-    <div class="uc-mast">
-      <a class="uc-back" href="../../index.html"><span class="uc-back-ico" aria-hidden="true">←</span> Lab</a>
+    <div class="ldh-mast">
+      <div>
+        <p class="ldh-kicker">Data viz · Interactive</p>
+        <h1 class="ldh-title">표 · 차트 연동</h1>
+      </div>
+      <a class="ldh-back" href="../../index.html">← Lab</a>
     </div>
+    <p class="ldh-lead">행을 누르면 비율(보지 않았다 ~ 5일)이 차트에 반영됩니다. <strong>Shift</strong>로 범위 선택, <strong>Ctrl/Cmd</strong>로 여러 행을 고를 수 있으며, 차트 수치는 부드럽게 전환됩니다.</p>
 
     <div class="uc-inner">
-      <header>
-        <p class="uc-kicker">Interactive</p>
-        <h1 class="uc-title"><em>test.xlsx</em> — 표 · 도넛 · 바</h1>
-        <p class="uc-sub">행을 누르면 비율(보지 않았다 ~ 5일)이 차트에 반영됩니다. Shift 범위, Ctrl/Cmd 다중 선택 시 값은 평균됩니다. 차트 수치는 0.8초 이징으로 움직입니다.</p>
-      </header>
-
       <div class="uc-toolbar">
         <button type="button" class="uc-btn uc-btn--primary" id="uc-btn-all">전체 선택</button>
         <button type="button" class="uc-btn" id="uc-btn-clear">선택 해제</button>
