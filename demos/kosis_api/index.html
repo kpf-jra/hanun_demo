@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KOSIS 통계 API 데모</title>
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="../../assets/lab-demo-header.css" />
+  <style>
+    #unique-content-kosis,
+    #unique-content-kosis * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    #unique-content-kosis {
+      --yellow: #facc15;
+      --black: #000000;
+      --white: #ffffff;
+      --green-a11y: #15803d;
+      --shadow: 12px 12px 0 var(--yellow);
+      --border: 4px solid var(--black);
+      --ease-ui: cubic-bezier(0.65, 0, 0.35, 1);
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.5;
+      font-size: clamp(0.875rem, 0.82rem + 0.2vw, 0.95rem);
+      padding: clamp(0.75rem, 3vw, 1.25rem);
+      padding-bottom: clamp(2rem, 5vw, 3rem);
+    }
+    #unique-content-kosis .uc-inner {
+      max-width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+    #unique-content-kosis .kosis-setup {
+      margin: 0 0 1rem;
+      padding: 0.85rem 1rem;
+      border: var(--border);
+      background: #fff7d6;
+      box-shadow: 8px 8px 0 var(--yellow);
+      font-weight: 700;
+      line-height: 1.55;
+    }
+    #unique-content-kosis .kosis-setup code {
+      font-size: 0.85em;
+      background: rgba(0, 0, 0, 0.06);
+      padding: 0.1em 0.35em;
+    }
+    #unique-content-kosis .kosis-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+      gap: clamp(0.85rem, 2vw, 1.1rem);
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      #unique-content-kosis .kosis-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    #unique-content-kosis .kosis-panel {
+      border: var(--border);
+      box-shadow: var(--shadow);
+      background: var(--white);
+      padding: clamp(0.85rem, 2vw, 1rem);
+    }
+    #unique-content-kosis .kosis-panel h2 {
+      margin: 0 0 0.65rem;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    #unique-content-kosis .kosis-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    #unique-content-kosis .kosis-toolbar label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+    #unique-content-kosis .kosis-org-pill {
+      font-size: 0.78rem;
+      font-weight: 900;
+      padding: 0.4rem 0.7rem;
+      border: 3px solid var(--black);
+      background: var(--yellow);
+    }
+    #unique-content-kosis .kosis-toolbar input {
+      font: inherit;
+      border: 3px solid var(--black);
+      padding: 0.35rem 0.55rem;
+      background: var(--white);
+    }
+    #unique-content-kosis .uc-btn {
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 900;
+      padding: 0.5rem 0.95rem;
+      border: var(--border);
+      background: var(--white);
+      color: var(--black);
+      cursor: pointer;
+      box-shadow: 6px 6px 0 var(--yellow);
+      transition: transform 0.5s var(--ease-ui), box-shadow 0.5s var(--ease-ui), background 0.3s ease;
+    }
+    #unique-content-kosis .uc-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--yellow);
+      background: var(--yellow);
+    }
+    #unique-content-kosis .uc-btn:focus-visible {
+      outline: 3px solid var(--green-a11y);
+      outline-offset: 2px;
+    }
+    #unique-content-kosis .uc-btn--primary {
+      background: var(--black);
+      color: var(--yellow);
+    }
+    #unique-content-kosis .uc-btn--primary:hover {
+      background: var(--yellow);
+      color: var(--black);
+    }
+    #unique-content-kosis .kosis-breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem 0.35rem;
+      margin-bottom: 0.65rem;
+      min-height: 1.75rem;
+    }
+    #unique-content-kosis .kosis-crumb {
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      padding: 0.15rem 0.2rem;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    #unique-content-kosis .kosis-crumb:disabled {
+      opacity: 1;
+      cursor: default;
+      text-decoration: none;
+      font-weight: 900;
+    }
+    #unique-content-kosis .kosis-crumb-sep {
+      opacity: 0.45;
+      font-weight: 900;
+    }
+    #unique-content-kosis .kosis-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      max-height: min(52vh, 28rem);
+      overflow: auto;
+      padding-right: 0.15rem;
+    }
+    #unique-content-kosis .kosis-list-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.55rem;
+      align-items: start;
+      text-align: left;
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border: 3px solid var(--black);
+      background: var(--white);
+      cursor: pointer;
+      font: inherit;
+      transition: background 0.25s ease, transform 0.35s var(--ease-ui);
+    }
+    #unique-content-kosis .kosis-list-item:hover,
+    #unique-content-kosis .kosis-list-item:focus-visible {
+      background: #fff9df;
+      transform: translate(-2px, -2px);
+      outline: none;
+    }
+    #unique-content-kosis .kosis-list-item--table {
+      border: 1px solid rgba(0, 0, 0, 0.18);
+      background: #fcfcfc;
+      padding: 0.5rem 0.6rem;
+      display: block;
+      text-align: left;
+    }
+    #unique-content-kosis .kosis-list-item--table:hover,
+    #unique-content-kosis .kosis-list-item--table:focus-visible {
+      border-color: rgba(0, 0, 0, 0.38);
+      background: #fffbeb;
+      transform: none;
+    }
+    #unique-content-kosis .kosis-list-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    #unique-content-kosis .kosis-list-item--table .kosis-list-label {
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    #unique-content-kosis .kosis-list-id {
+      font-size: 0.68rem;
+      font-weight: 700;
+      opacity: 0.55;
+      font-variant-numeric: tabular-nums;
+    }
+    #unique-content-kosis .kosis-list-kind {
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.35rem;
+      border: 2px solid var(--black);
+      background: var(--yellow);
+      white-space: nowrap;
+    }
+    #unique-content-kosis .kosis-list-label {
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    #unique-content-kosis .kosis-status {
+      margin: 0.35rem 0 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      opacity: 0.72;
+    }
+    #unique-content-kosis .kosis-status.is-error {
+      opacity: 1;
+      color: #b91c1c;
+    }
+    #unique-content-kosis .kosis-panel-head {
+      margin-bottom: 0.85rem;
+    }
+    #unique-content-kosis .kosis-panel-head h3 {
+      margin: 0;
+      font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    #unique-content-kosis .kosis-panel-meta {
+      margin: 0.35rem 0 0;
+      font-size: 0.8rem;
+      font-weight: 700;
+      opacity: 0.75;
+    }
+    #unique-content-kosis .kosis-data-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    #unique-content-kosis .kosis-year-range {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem 0.45rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+    #unique-content-kosis .kosis-year-range-label {
+      margin-right: 0.15rem;
+      white-space: nowrap;
+    }
+    #unique-content-kosis .kosis-year-range input {
+      width: 5rem;
+    }
+    #unique-content-kosis .kosis-year-sep {
+      font-weight: 900;
+      opacity: 0.55;
+    }
+    #unique-content-kosis .kosis-chart-area {
+      border: 3px solid var(--black);
+      padding: 0.75rem;
+      background: #fffdf5;
+    }
+    #unique-content-kosis .kosis-chart-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem 1rem;
+      margin-bottom: 0.65rem;
+    }
+    #unique-content-kosis .kosis-chart-controls legend {
+      font-size: 0.8rem;
+      font-weight: 900;
+      padding: 0;
+    }
+    #unique-content-kosis .kosis-chart-type {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.85rem;
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+    #unique-content-kosis .kosis-chart-type label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    #unique-content-kosis .kosis-chart-type input {
+      accent-color: var(--black);
+    }
+    #unique-content-kosis .kosis-chart-svg-wrap {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+    }
+    #unique-content-kosis .kosis-chart-svg {
+      display: block;
+      width: 100%;
+      min-width: 320px;
+      height: auto;
+      overflow: visible;
+    }
+    #unique-content-kosis .kosis-chart-axis-label {
+      font-size: 11px;
+      font-weight: 800;
+      fill: var(--black);
+    }
+    #unique-content-kosis .kosis-chart-grid-line {
+      stroke: rgba(0, 0, 0, 0.12);
+      stroke-width: 1;
+    }
+    #unique-content-kosis .kosis-chart-bar {
+      fill: var(--black);
+      transition: opacity 0.2s ease;
+    }
+    #unique-content-kosis .kosis-chart-bar:hover {
+      opacity: 0.72;
+    }
+    #unique-content-kosis .kosis-chart-line {
+      fill: none;
+      stroke: var(--black);
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    #unique-content-kosis .kosis-chart-point {
+      fill: var(--yellow);
+      stroke: var(--black);
+      stroke-width: 2;
+    }
+    #unique-content-kosis .kosis-table-scroll {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    #unique-content-kosis .kosis-table-unit {
+      margin: 0 0 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: right;
+      opacity: 0.8;
+    }
+    #unique-content-kosis .kosis-table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      table-layout: auto;
+    }
+    #unique-content-kosis .kosis-table th,
+    #unique-content-kosis .kosis-table td {
+      border: 2px solid var(--black);
+      padding: 0.45rem 0.55rem;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    #unique-content-kosis .kosis-table th {
+      background: var(--yellow);
+      font-weight: 900;
+      text-align: center;
+    }
+    #unique-content-kosis .kosis-row-label {
+      text-align: left;
+      font-weight: 700;
+      min-width: 5.5rem;
+    }
+    #unique-content-kosis .kosis-row-label--sub {
+      min-width: 4.5rem;
+    }
+    #unique-content-kosis .kosis-table .kosis-num {
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+      text-align: right;
+      min-width: 4.5rem;
+    }
+    #unique-content-kosis .kosis-table--detail {
+      margin-top: 0.85rem;
+    }
+    #unique-content-kosis .kosis-table-caption {
+      caption-side: top;
+      text-align: left;
+      font-size: 0.82rem;
+      font-weight: 900;
+      margin-bottom: 0.45rem;
+      padding: 0;
+    }
+    #unique-content-kosis .kosis-empty {
+      margin: 0;
+      padding: 1rem 0.5rem;
+      text-align: center;
+      font-weight: 700;
+      opacity: 0.7;
+    }
+    #unique-content-kosis .kosis-note {
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.7;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+  <div id="unique-content-kosis">
+    <div class="uc-inner">
+      <header class="ldh-mast">
+        <div>
+          <p class="ldh-kicker">Visual AI Content Lab</p>
+          <h1 class="ldh-title">KOSIS 통계 API 데모</h1>
+        </div>
+        <a class="ldh-back" href="../../">← Lab 홈</a>
+      </header>
+      <p class="ldh-lead">
+        KOSIS OpenAPI로 <strong>한국언론진흥재단</strong> 통계 중 <strong>API 수치 조회가 가능한 신문산업 표 16개</strong>를 바로 보여 줍니다.
+        KOSIS 목록에는 370여 개가 있으나, OpenAPI로 수치가 열린 표는 이 16개뿐입니다.
+      </p>
+
+      <div class="kosis-setup" id="kosis-setup" hidden>
+        <strong>설정 필요:</strong> KOSIS 회원가입 후
+        <a href="https://kosis.kr/openapi/index/index.jsp" target="_blank" rel="noopener noreferrer">활용신청</a>으로
+        인증키를 발급받고, 프로젝트 루트 <code>.env</code>에
+        <code>KOSIS_API_KEY=발급키</code>를 넣은 뒤 <code>node server.mjs</code>를 재시작하세요.
+        회사망 SSL 오류 시 <code>GEMINI_INSECURE_SSL=1</code>도 함께 설정할 수 있습니다.
+      </div>
+
+      <div class="kosis-layout">
+        <section class="kosis-panel" aria-labelledby="kosis-list-heading">
+          <h2 id="kosis-list-heading">API 조회 가능 통계표</h2>
+          <div class="kosis-toolbar">
+            <span class="kosis-org-pill" aria-label="조회 기관">신문산업 · 16개</span>
+            <button type="button" class="uc-btn uc-btn--primary" id="kosis-sample-btn">예제: 신문산업 매출액</button>
+          </div>
+          <div class="kosis-list" id="kosis-list" role="list"></div>
+          <p class="kosis-status" id="kosis-list-status" aria-live="polite">준비 중…</p>
+        </section>
+
+        <section class="kosis-panel" aria-labelledby="kosis-data-heading">
+          <div class="kosis-panel-head">
+            <h2 id="kosis-data-heading" class="visually-hidden" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0">통계자료</h2>
+            <h3 id="kosis-panel-title">통계표를 선택하세요</h3>
+            <p class="kosis-panel-meta" id="kosis-panel-meta">왼쪽 목록에서 통계표를 고르거나 예제 버튼을 눌러 보세요.</p>
+          </div>
+          <div class="kosis-toolbar">
+            <div class="kosis-year-range" role="group" aria-label="조회기간">
+              <span class="kosis-year-range-label">조회기간</span>
+              <input type="number" id="kosis-year-start" min="1990" max="2100" step="1" value="2017" aria-label="조회기간 시작" />
+              <span class="kosis-year-sep" aria-hidden="true">~</span>
+              <input type="number" id="kosis-year-end" min="1990" max="2100" step="1" value="2024" aria-label="조회기간 끝" />
+            </div>
+            <button type="button" class="uc-btn" id="kosis-reload-btn">조회</button>
+          </div>
+          <p class="kosis-status" id="kosis-panel-status" aria-live="polite"></p>
+          <div class="kosis-data-grid">
+            <div id="kosis-table-wrap"></div>
+            <div class="kosis-chart-area">
+              <div class="kosis-chart-controls">
+                <fieldset class="kosis-chart-type" role="radiogroup" aria-label="차트 유형">
+                  <legend>차트</legend>
+                  <label>
+                    <input type="radio" name="kosis-chart-type" value="bar" checked />
+                    막대
+                  </label>
+                  <label>
+                    <input type="radio" name="kosis-chart-type" value="line" />
+                    선
+                  </label>
+                </fieldset>
+              </div>
+              <div class="kosis-chart-svg-wrap" id="kosis-chart-wrap" aria-label="시계열 차트"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <p class="kosis-note">
+        출처: 통계청 KOSIS · API 호출은 브라우저 CORS 제약을 피하기 위해 로컬 서버 프록시(<code>/api/kosis/proxy</code>)를 경유합니다.
+        출처: 통계청 KOSIS · 한국언론진흥재단(413) 전체 374개 통계표 중 OpenAPI 수치 제공은 「신문·잡지산업실태조사 > 신문산업」 16개뿐입니다.
+        잡지산업·소셜미디어·청소년 조사는 KOSIS 웹에서만 조회됩니다.
+      </p>
+    </div>
+  </div>
+  <script src="kosis-demo.js"></script>
+</body>
+</html>

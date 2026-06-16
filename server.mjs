@@ -47,6 +47,22 @@ const HF_API_KEY =
   process.env.huggingface_api_key ||
   "";
 
+const KOSIS_API_KEY =
+  process.env.KOSIS_API_KEY ||
+  process.env.KOSIS_TOKEN ||
+  process.env.kosis_api_key ||
+  "";
+
+const KOSIS_OPENAPI_BASE =
+  process.env.KOSIS_OPENAPI_BASE || "https://kosis.kr/openapi";
+
+const KOSIS_ALLOWED_ENDPOINTS = new Set([
+  "statisticsList",
+  "statisticsData",
+  "statisticsExplData",
+  "Param/statisticsParameterData",
+]);
+
 const INSECURE_SSL =
   process.env.GEMINI_INSECURE_SSL === "1" ||
   process.env.GEMINI_INSECURE_SSL === "true" ||
@@ -58,6 +74,33 @@ function hfInferenceUrl(model) {
   return (
     "https://router.huggingface.co/hf-inference/models/" + modelPath
   );
+}
+
+function httpsGet(url) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    const req = https.request(
+      {
+        hostname: u.hostname,
+        path: u.pathname + u.search,
+        method: "GET",
+        headers: { Accept: "application/json, text/plain, */*" },
+        ...(INSECURE_SSL ? { rejectUnauthorized: false } : {}),
+      },
+      (res) => {
+        const chunks = [];
+        res.on("data", (c) => chunks.push(c));
+        res.on("end", () => {
+          resolve({
+            status: res.statusCode || 500,
+            text: Buffer.concat(chunks).toString("utf8"),
+          });
+        });
+      }
+    );
+    req.on("error", reject);
+    req.end();
+  });
 }
 
 function httpsPost(url, payload, headersExtra = {}) {
@@ -229,6 +272,76 @@ function sendHfConfig(res) {
   );
 }
 
+function sendKosisConfig(res) {
+  res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+  res.end(
+    JSON.stringify({
+      kosisConfigured: Boolean(KOSIS_API_KEY),
+    })
+  );
+}
+
+async function proxyKosis(req, res) {
+  const reqUrl = new URL(req.url, "http://x");
+  const endpoint = reqUrl.searchParams.get("endpoint") || "";
+  if (!KOSIS_ALLOWED_ENDPOINTS.has(endpoint)) {
+    res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(
+      JSON.stringify({
+        error: {
+          message:
+            "endpoint는 statisticsList, statisticsData, statisticsExplData, Param/statisticsParameterData 중 하나여야 합니다.",
+        },
+      })
+    );
+    return;
+  }
+
+  if (!KOSIS_API_KEY) {
+    res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(
+      JSON.stringify({
+        error: {
+          message:
+            "KOSIS API 키가 없습니다. 프로젝트 루트 .env 에 KOSIS_API_KEY= 를 설정하세요.",
+        },
+      })
+    );
+    return;
+  }
+
+  const upstreamParams = new URLSearchParams();
+  for (const [key, value] of reqUrl.searchParams.entries()) {
+    if (key === "endpoint") continue;
+    upstreamParams.append(key, value);
+  }
+  if (!upstreamParams.has("apiKey")) {
+    upstreamParams.set("apiKey", KOSIS_API_KEY);
+  }
+
+  const upstreamUrl =
+    KOSIS_OPENAPI_BASE.replace(/\/$/, "") +
+    "/" +
+    endpoint +
+    ".do?" +
+    upstreamParams.toString();
+
+  try {
+    const upstream = await httpsGet(upstreamUrl);
+    res.writeHead(upstream.status, {
+      "Content-Type": "application/json; charset=utf-8",
+    });
+    res.end(upstream.text);
+  } catch (err) {
+    res.writeHead(502, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(
+      JSON.stringify({
+        error: { message: geminiFetchErrorMessage(err) },
+      })
+    );
+  }
+}
+
 async function proxyHf(req, res) {
   let parsed;
   try {
@@ -393,6 +506,16 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.url === "/api/kosis/config" && req.method === "GET") {
+    sendKosisConfig(res);
+    return;
+  }
+
+  if (req.url.startsWith("/api/kosis/proxy") && req.method === "GET") {
+    await proxyKosis(req, res);
+    return;
+  }
+
   if (req.method === "GET" || req.method === "HEAD") {
     serveStatic(req, res);
     return;
@@ -415,6 +538,11 @@ server.listen(PORT, () => {
     console.log("Hugging Face API: .env 키 사용 중");
   } else {
     console.warn("Hugging Face API: .env 에 HF_API_KEY 가 없습니다.");
+  }
+  if (KOSIS_API_KEY) {
+    console.log("KOSIS API: .env 키 사용 중");
+  } else {
+    console.warn("KOSIS API: .env 에 KOSIS_API_KEY 가 없습니다.");
   }
   if (INSECURE_SSL) {
     console.warn(

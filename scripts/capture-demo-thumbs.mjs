@@ -13,6 +13,7 @@ const OUT_DIR = path.join(ROOT, "assets", "thumbs");
 const BASE = process.env.THUMB_BASE_URL || "http://localhost:3456";
 
 const DEMOS = [
+  { slug: "kosis-api", path: "/demos/kosis_api/" },
   { slug: "xlsx-charts", path: "/demos/xlsx-charts/" },
   { slug: "kolang-quiz", path: "/demos/kolang-quiz/" },
   { slug: "media-crossword", path: "/demos/media-crossword/" },
