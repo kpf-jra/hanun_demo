@@ -176,17 +176,58 @@
       box-shadow: 6px 6px 0 var(--yellow);
     }
     #unique-content-882100 .lab-card-thumb {
-      aspect-ratio: 16 / 10;
-      border-bottom: var(--border);
-      background: #f3f3f3;
-      overflow: hidden;
+      padding: 0.85rem 0.85rem 0.25rem;
+      background: transparent;
+      border-bottom: none;
     }
-    #unique-content-882100 .lab-card-thumb img {
+    #unique-content-882100 .lab-card-thumb-frame {
+      position: relative;
+      aspect-ratio: 16 / 6.5;
+      border: 3px solid var(--black);
+      overflow: hidden;
+      background: linear-gradient(165deg, #f0f0f0 0%, #e4e4e4 100%);
+      box-shadow: 5px 5px 0 var(--black);
+    }
+    #unique-content-882100 .lab-card-thumb-frame::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 58%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(255, 255, 255, 0.45) 48%,
+        rgba(255, 255, 255, 0.97) 100%
+      );
+      z-index: 1;
+      pointer-events: none;
+      transition: background 0.35s ease;
+    }
+    #unique-content-882100 .lab-card:hover .lab-card-thumb-frame::after,
+    #unique-content-882100 .lab-card:focus-visible .lab-card-thumb-frame::after {
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(250, 204, 21, 0.42) 48%,
+        var(--yellow) 100%
+      );
+    }
+    #unique-content-882100 .lab-card-thumb-frame img {
       width: 100%;
-      height: 100%;
+      height: 152%;
+      max-width: none;
       object-fit: cover;
       object-position: top center;
       display: block;
+      transform: scale(1.03);
+      transform-origin: top center;
+      transition: transform 0.75s var(--ease-pop);
+    }
+    #unique-content-882100 .lab-card:hover .lab-card-thumb-frame img,
+    #unique-content-882100 .lab-card:focus-visible .lab-card-thumb-frame img {
+      transform: scale(1.09) translateY(-1.5%);
     }
     #unique-content-882100 .lab-card-top {
       display: flex;
@@ -283,6 +324,9 @@
       #unique-content-882100 .lab-hero:hover,
       #unique-content-882100 .lab-card:hover,
       #unique-content-882100 .lab-card:focus-visible { transform: none; }
+      #unique-content-882100 .lab-card-thumb-frame img { transition: none; transform: none; }
+      #unique-content-882100 .lab-card:hover .lab-card-thumb-frame img,
+      #unique-content-882100 .lab-card:focus-visible .lab-card-thumb-frame img { transform: none; }
     }
   </style>
 </head>
@@ -323,7 +367,9 @@
             data-keywords="표 차트 연동 데이터 시각화 인터랙티브 수치 보도자료"
           >
             <div class="lab-card-thumb">
-              <img src="assets/thumbs/xlsx-charts.webp" alt="표 · 차트 연동 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+              <div class="lab-card-thumb-frame">
+              <img src="assets/thumbs/xlsx-charts.webp" alt="표 · 차트 연동 데모 화면" width="640" height="400" loading="lazy" decoding="async"               />
+              </div>
             </div>
             <div class="lab-card-top">
               <div class="lab-tags">
@@ -346,7 +392,9 @@
             data-keywords="기자 우리말 퀴즈 OX 언어 교육 워크숍 브리핑"
           >
             <div class="lab-card-thumb">
-              <img src="assets/thumbs/kolang-quiz.webp" alt="기자를 위한 우리말 퀴즈 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+              <div class="lab-card-thumb-frame">
+              <img src="assets/thumbs/kolang-quiz.webp" alt="기자를 위한 우리말 퀴즈 데모 화면" width="640" height="400" loading="lazy" decoding="async"               />
+              </div>
             </div>
             <div class="lab-card-top">
               <div class="lab-tags">
@@ -369,7 +417,9 @@
             data-keywords="가로세로 퀴즈 언론 키워드 퍼즐 신문과방송 단서"
           >
             <div class="lab-card-thumb">
-              <img src="assets/thumbs/media-crossword.webp" alt="언론 키워드 가로세로 퀴즈 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+              <div class="lab-card-thumb-frame">
+              <img src="assets/thumbs/media-crossword.webp" alt="언론 키워드 가로세로 퀴즈 데모 화면" width="640" height="400" loading="lazy" decoding="async"               />
+              </div>
             </div>
             <div class="lab-card-top">
               <div class="lab-tags">
@@ -392,7 +442,9 @@
             data-keywords="출판물 소개 레이아웃 책 보고서 표지 인용"
           >
             <div class="lab-card-thumb">
-              <img src="assets/thumbs/publication.webp" alt="출판물 소개 페이지 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+              <div class="lab-card-thumb-frame">
+              <img src="assets/thumbs/publication.webp" alt="출판물 소개 페이지 데모 화면" width="640" height="400" loading="lazy" decoding="async"               />
+              </div>
             </div>
             <div class="lab-card-top">
               <div class="lab-tags">
@@ -415,7 +467,9 @@
             data-keywords="뉴스 사실확인 체크리스트 AI 팩트체크 언론윤리 교육 기사검토"
           >
             <div class="lab-card-thumb">
-              <img src="assets/thumbs/news-verification.webp" alt="뉴스 사실확인 체크리스트 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+              <div class="lab-card-thumb-frame">
+              <img src="assets/thumbs/news-verification.webp" alt="뉴스 사실확인 체크리스트 데모 화면" width="640" height="400" loading="lazy" decoding="async"               />
+              </div>
             </div>
             <div class="lab-card-top">
               <div class="lab-tags">
@@ -438,7 +492,9 @@
             data-keywords="뉴스 사실확인 체크리스트 공개 체험 AI 팩트체크 오픈데모"
           >
             <div class="lab-card-thumb">
-              <img src="assets/thumbs/news-verification-open.webp" alt="뉴스 사실확인 체크리스트 공개 체험 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+              <div class="lab-card-thumb-frame">
+              <img src="assets/thumbs/news-verification-open.webp" alt="뉴스 사실확인 체크리스트 공개 체험 데모 화면" width="640" height="400" loading="lazy" decoding="async"               />
+              </div>
             </div>
             <div class="lab-card-top">
               <div class="lab-tags">
