@@ -73,13 +73,65 @@
       color: var(--black);
       opacity: 0.88;
     }
+    #unique-content-882100 .lab-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.25rem;
+      margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+    }
+    #unique-content-882100 .lab-search-wrap {
+      flex: 1 1 16rem;
+      max-width: 28rem;
+      position: relative;
+    }
+    #unique-content-882100 .lab-search {
+      width: 100%;
+      padding: 0.7rem 2.75rem 0.7rem 1rem;
+      border: var(--border);
+      background: var(--white);
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--black);
+      box-shadow: 6px 6px 0 var(--yellow);
+    }
+    #unique-content-882100 .lab-search:focus {
+      outline: 3px solid var(--yellow);
+      outline-offset: 2px;
+    }
+    #unique-content-882100 .lab-search::placeholder {
+      color: var(--black);
+      opacity: 0.45;
+      font-weight: 500;
+    }
+    #unique-content-882100 .lab-search-clear {
+      position: absolute;
+      right: 0.55rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2rem;
+      height: 2rem;
+      border: 3px solid var(--black);
+      background: var(--white);
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: none;
+      place-items: center;
+      line-height: 1;
+    }
+    #unique-content-882100 .lab-search-clear.is-visible {
+      display: grid;
+    }
     #unique-content-882100 .lab-section-head {
       display: flex;
       flex-wrap: wrap;
       align-items: baseline;
       justify-content: space-between;
       gap: 0.5rem 1.5rem;
-      margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+      margin-bottom: 0.75rem;
     }
     #unique-content-882100 .lab-section-head h2 {
       margin: 0;
@@ -87,7 +139,7 @@
       font-weight: 900;
       letter-spacing: -0.02em;
     }
-    #unique-content-882100 .lab-section-head p {
+    #unique-content-882100 .lab-count {
       margin: 0;
       font-size: 0.92rem;
       font-weight: 600;
@@ -95,7 +147,7 @@
     }
     #unique-content-882100 .lab-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
       gap: clamp(1rem, 2.5vw, 1.5rem);
     }
     #unique-content-882100 .lab-card {
@@ -106,8 +158,11 @@
       box-shadow: 10px 10px 0 var(--yellow);
       text-decoration: none;
       color: inherit;
-      transition: transform 0.8s var(--ease-pop), box-shadow 0.8s var(--ease-pop), background 0.35s ease;
+      transition: transform 0.8s var(--ease-pop), box-shadow 0.8s var(--ease-pop), background 0.35s ease, opacity 0.25s ease;
       min-height: 100%;
+    }
+    #unique-content-882100 .lab-card.is-hidden {
+      display: none;
     }
     #unique-content-882100 .lab-card:hover,
     #unique-content-882100 .lab-card:focus-visible {
@@ -120,34 +175,59 @@
       transform: translate(2px, 2px);
       box-shadow: 6px 6px 0 var(--yellow);
     }
+    #unique-content-882100 .lab-card-thumb {
+      aspect-ratio: 16 / 10;
+      border-bottom: var(--border);
+      background: #f3f3f3;
+      overflow: hidden;
+    }
+    #unique-content-882100 .lab-card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
     #unique-content-882100 .lab-card-top {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 0.75rem;
-      padding: 1.15rem 1.15rem 0.75rem;
+      padding: 0.85rem 1rem 0.5rem;
+    }
+    #unique-content-882100 .lab-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      flex: 1;
+      min-width: 0;
     }
     #unique-content-882100 .lab-tag {
       display: inline-block;
-      padding: 0.2em 0.55em;
-      border: 3px solid var(--black);
+      padding: 0.18em 0.5em;
+      border: 2px solid var(--black);
       background: var(--black);
       color: var(--yellow);
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    #unique-content-882100 .lab-card:hover .lab-tag,
+    #unique-content-882100 .lab-card:focus-visible .lab-tag {
+      background: var(--white);
+      color: var(--black);
     }
     #unique-content-882100 .lab-go {
       flex-shrink: 0;
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 2.25rem;
+      height: 2.25rem;
       display: grid;
       place-items: center;
       border: var(--border);
       background: var(--black);
       color: var(--yellow);
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 900;
     }
     #unique-content-882100 .lab-card:hover .lab-go,
@@ -157,24 +237,37 @@
     }
     #unique-content-882100 .lab-card-body {
       flex: 1;
-      padding: 0 1.15rem 1.25rem;
+      padding: 0 1rem 1.15rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }
     #unique-content-882100 .lab-card-title {
       margin: 0;
-      font-size: 1.08rem;
+      font-size: 1.05rem;
       font-weight: 900;
       letter-spacing: -0.02em;
       line-height: 1.3;
     }
     #unique-content-882100 .lab-card-desc {
       margin: 0;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 500;
       line-height: 1.55;
       opacity: 0.82;
+    }
+    #unique-content-882100 .lab-empty {
+      display: none;
+      grid-column: 1 / -1;
+      padding: 2rem 1.25rem;
+      border: var(--border);
+      background: var(--white);
+      box-shadow: 8px 8px 0 var(--yellow);
+      text-align: center;
+      font-weight: 700;
+    }
+    #unique-content-882100 .lab-empty.is-visible {
+      display: block;
     }
     #unique-content-882100 .lab-foot {
       padding-top: clamp(1rem, 3vw, 1.5rem);
@@ -205,12 +298,40 @@
       <section aria-labelledby="lab-demos-heading">
         <div class="lab-section-head">
           <h2 id="lab-demos-heading">데모 갤러리</h2>
-          <p>총 6개 · 클릭하면 새 페이지에서 열립니다</p>
+          <p class="lab-count" id="lab-count" aria-live="polite">총 6개</p>
         </div>
-        <div class="lab-gallery">
-          <a class="lab-card" href="demos/xlsx-charts/">
+
+        <div class="lab-toolbar">
+          <label class="lab-search-wrap">
+            <span class="visually-hidden" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0">데모 검색</span>
+            <input
+              class="lab-search"
+              id="lab-search"
+              type="search"
+              placeholder="제목, 설명, 태그로 검색…"
+              autocomplete="off"
+              enterkeyhint="search"
+            />
+            <button type="button" class="lab-search-clear" id="lab-search-clear" aria-label="검색어 지우기">×</button>
+          </label>
+        </div>
+
+        <div class="lab-gallery" id="lab-gallery">
+          <a
+            class="lab-card"
+            href="demos/xlsx-charts/"
+            data-keywords="표 차트 연동 데이터 시각화 인터랙티브 수치 보도자료"
+          >
+            <div class="lab-card-thumb">
+              <img src="assets/thumbs/xlsx-charts.webp" alt="표 · 차트 연동 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+            </div>
             <div class="lab-card-top">
-              <span class="lab-tag">데이터</span>
+              <div class="lab-tags">
+                <span class="lab-tag">데이터</span>
+                <span class="lab-tag">차트</span>
+                <span class="lab-tag">시각화</span>
+                <span class="lab-tag">인터랙티브</span>
+              </div>
               <span class="lab-go" aria-hidden="true">↗</span>
             </div>
             <div class="lab-card-body">
@@ -219,9 +340,21 @@
             </div>
           </a>
 
-          <a class="lab-card" href="demos/kolang-quiz/">
+          <a
+            class="lab-card"
+            href="demos/kolang-quiz/"
+            data-keywords="기자 우리말 퀴즈 OX 언어 교육 워크숍 브리핑"
+          >
+            <div class="lab-card-thumb">
+              <img src="assets/thumbs/kolang-quiz.webp" alt="기자를 위한 우리말 퀴즈 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+            </div>
             <div class="lab-card-top">
-              <span class="lab-tag">퀴즈</span>
+              <div class="lab-tags">
+                <span class="lab-tag">퀴즈</span>
+                <span class="lab-tag">우리말</span>
+                <span class="lab-tag">기자교육</span>
+                <span class="lab-tag">OX</span>
+              </div>
               <span class="lab-go" aria-hidden="true">↗</span>
             </div>
             <div class="lab-card-body">
@@ -230,9 +363,21 @@
             </div>
           </a>
 
-          <a class="lab-card" href="demos/media-crossword/">
+          <a
+            class="lab-card"
+            href="demos/media-crossword/"
+            data-keywords="가로세로 퀴즈 언론 키워드 퍼즐 신문과방송 단서"
+          >
+            <div class="lab-card-thumb">
+              <img src="assets/thumbs/media-crossword.webp" alt="언론 키워드 가로세로 퀴즈 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+            </div>
             <div class="lab-card-top">
-              <span class="lab-tag">퀴즈</span>
+              <div class="lab-tags">
+                <span class="lab-tag">퀴즈</span>
+                <span class="lab-tag">가로세로</span>
+                <span class="lab-tag">퍼즐</span>
+                <span class="lab-tag">언론</span>
+              </div>
               <span class="lab-go" aria-hidden="true">↗</span>
             </div>
             <div class="lab-card-body">
@@ -241,9 +386,21 @@
             </div>
           </a>
 
-          <a class="lab-card" href="demos/publication/">
+          <a
+            class="lab-card"
+            href="demos/publication/"
+            data-keywords="출판물 소개 레이아웃 책 보고서 표지 인용"
+          >
+            <div class="lab-card-thumb">
+              <img src="assets/thumbs/publication.webp" alt="출판물 소개 페이지 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+            </div>
             <div class="lab-card-top">
-              <span class="lab-tag">소개</span>
+              <div class="lab-tags">
+                <span class="lab-tag">소개</span>
+                <span class="lab-tag">출판물</span>
+                <span class="lab-tag">레이아웃</span>
+                <span class="lab-tag">인용</span>
+              </div>
               <span class="lab-go" aria-hidden="true">↗</span>
             </div>
             <div class="lab-card-body">
@@ -252,9 +409,21 @@
             </div>
           </a>
 
-          <a class="lab-card" href="apps/news-verification/">
+          <a
+            class="lab-card"
+            href="apps/news-verification/"
+            data-keywords="뉴스 사실확인 체크리스트 AI 팩트체크 언론윤리 교육 기사검토"
+          >
+            <div class="lab-card-thumb">
+              <img src="assets/thumbs/news-verification.webp" alt="뉴스 사실확인 체크리스트 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+            </div>
             <div class="lab-card-top">
-              <span class="lab-tag">AI 도구</span>
+              <div class="lab-tags">
+                <span class="lab-tag">AI</span>
+                <span class="lab-tag">팩트체크</span>
+                <span class="lab-tag">사실확인</span>
+                <span class="lab-tag">뉴스</span>
+              </div>
               <span class="lab-go" aria-hidden="true">↗</span>
             </div>
             <div class="lab-card-body">
@@ -263,9 +432,21 @@
             </div>
           </a>
 
-          <a class="lab-card" href="apps/news-verification-open/">
+          <a
+            class="lab-card"
+            href="apps/news-verification-open/"
+            data-keywords="뉴스 사실확인 체크리스트 공개 체험 AI 팩트체크 오픈데모"
+          >
+            <div class="lab-card-thumb">
+              <img src="assets/thumbs/news-verification-open.webp" alt="뉴스 사실확인 체크리스트 공개 체험 데모 화면" width="640" height="400" loading="lazy" decoding="async" />
+            </div>
             <div class="lab-card-top">
-              <span class="lab-tag">AI 도구</span>
+              <div class="lab-tags">
+                <span class="lab-tag">AI</span>
+                <span class="lab-tag">팩트체크</span>
+                <span class="lab-tag">공개체험</span>
+                <span class="lab-tag">뉴스</span>
+              </div>
               <span class="lab-go" aria-hidden="true">↗</span>
             </div>
             <div class="lab-card-body">
@@ -273,11 +454,71 @@
               <p class="lab-card-desc">위와 같은 기능을 누구나 바로 체험할 수 있는 공개 데모 버전입니다. 별도 가입 없이 사용해 볼 수 있습니다.</p>
             </div>
           </a>
+
+          <p class="lab-empty" id="lab-empty" role="status">검색 결과가 없습니다. 다른 키워드로 다시 찾아 보세요.</p>
         </div>
       </section>
 
-      <p class="lab-foot">Visual Content Lab · 언론·교육용 인터랙티브 콘텐츠 실험실</p>
+      <p class="lab-foot">Visual AI Content Lab · 한국언론진흥재단 산업분석실 콘텐츠 실험실</p>
     </div>
   </div>
+  <script>
+    (function () {
+      var root = document.getElementById("unique-content-882100");
+      if (!root) return;
+
+      var search = root.querySelector("#lab-search");
+      var clearBtn = root.querySelector("#lab-search-clear");
+      var gallery = root.querySelector("#lab-gallery");
+      var countEl = root.querySelector("#lab-count");
+      var emptyEl = root.querySelector("#lab-empty");
+      var cards = Array.prototype.slice.call(gallery.querySelectorAll(".lab-card"));
+      var total = cards.length;
+
+      function cardText(card) {
+        var tags = Array.prototype.map.call(
+          card.querySelectorAll(".lab-tag"),
+          function (el) { return el.textContent.trim(); }
+        ).join(" ");
+        var title = (card.querySelector(".lab-card-title") || {}).textContent || "";
+        var desc = (card.querySelector(".lab-card-desc") || {}).textContent || "";
+        var extra = card.getAttribute("data-keywords") || "";
+        return (title + " " + desc + " " + tags + " " + extra).toLowerCase();
+      }
+
+      var index = cards.map(function (card) {
+        return { card: card, text: cardText(card) };
+      });
+
+      function applyFilter() {
+        var q = (search.value || "").trim().toLowerCase();
+        var terms = q ? q.split(/\s+/).filter(Boolean) : [];
+        var visible = 0;
+
+        index.forEach(function (item) {
+          var match = !terms.length || terms.every(function (t) {
+            return item.text.indexOf(t) !== -1;
+          });
+          item.card.classList.toggle("is-hidden", !match);
+          if (match) visible += 1;
+        });
+
+        if (countEl) {
+          countEl.textContent = terms.length
+            ? "검색 결과 " + visible + "개"
+            : "총 " + total + "개";
+        }
+        if (emptyEl) emptyEl.classList.toggle("is-visible", terms.length > 0 && visible === 0);
+        if (clearBtn) clearBtn.classList.toggle("is-visible", q.length > 0);
+      }
+
+      search.addEventListener("input", applyFilter);
+      clearBtn.addEventListener("click", function () {
+        search.value = "";
+        search.focus();
+        applyFilter();
+      });
+    })();
+  </script>
 </body>
 </html>
