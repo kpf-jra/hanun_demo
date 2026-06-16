@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Visual Content Lab</title>
+  <meta name="description" content="기사·보도자료·교육용 비주얼·인터랙티브 콘텐츠 데모 모음" />
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     #unique-content-882100,
     #unique-content-882100 * {
       box-sizing: border-box;
-      max-width: 100%;
     }
     #unique-content-882100 {
       --yellow: #facc15;
@@ -23,20 +23,20 @@
       background: var(--white);
       line-height: 1.55;
       min-height: 100dvh;
-      padding: clamp(1rem, 4vw, 2rem);
     }
-    #unique-content-882100 .lab-stack {
-      max-width: 44rem;
-      margin: 0 auto;
+    #unique-content-882100 .lab-wrap {
+      width: 100%;
+      max-width: none;
+      padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3rem) clamp(2rem, 6vw, 4rem);
       display: flex;
       flex-direction: column;
-      gap: clamp(1.25rem, 3vw, 1.75rem);
+      gap: clamp(2rem, 5vw, 3.5rem);
     }
     #unique-content-882100 .lab-hero {
       background: var(--white);
       border: var(--border);
       box-shadow: var(--shadow);
-      padding: clamp(1.5rem, 5vw, 2.5rem);
+      padding: clamp(2rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 3rem);
       transition: transform 0.8s var(--ease-pop), box-shadow 0.8s var(--ease-pop);
     }
     #unique-content-882100 .lab-hero:hover {
@@ -52,7 +52,7 @@
     }
     #unique-content-882100 .lab-title {
       margin: 0;
-      font-size: clamp(2rem, 1.4rem + 3vw, 2.85rem);
+      font-size: clamp(2.25rem, 1.5rem + 4vw, 3.5rem);
       font-weight: 900;
       letter-spacing: -0.04em;
       line-height: 1.08;
@@ -66,177 +66,217 @@
       box-shadow: 8px 8px 0 var(--black);
     }
     #unique-content-882100 .lab-lead {
-      margin: 1rem 0 0;
-      max-width: 36rem;
-      font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+      margin: 1.25rem 0 0;
+      max-width: 42rem;
+      font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
       font-weight: 500;
       color: var(--black);
       opacity: 0.88;
     }
-    #unique-content-882100 .lab-panel {
-      background: var(--white);
-      border: var(--border);
-      box-shadow: var(--shadow);
-      padding: clamp(1.25rem, 3.5vw, 1.75rem);
+    #unique-content-882100 .lab-section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem 1.5rem;
+      margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
     }
-    #unique-content-882100 .lab-panel h2 {
-      margin: 0 0 1rem;
-      font-size: 0.8rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-    #unique-content-882100 ul {
-      list-style: none;
+    #unique-content-882100 .lab-section-head h2 {
       margin: 0;
-      padding: 0;
+      font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    #unique-content-882100 .lab-section-head p {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 600;
+      opacity: 0.7;
+    }
+    #unique-content-882100 .lab-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+      gap: clamp(1rem, 2.5vw, 1.5rem);
+    }
+    #unique-content-882100 .lab-card {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-    }
-    #unique-content-882100 li a {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 1rem 1.1rem;
       border: var(--border);
       background: var(--white);
-      color: var(--black);
-      text-decoration: none;
-      font-weight: 800;
-      font-size: 1.02rem;
-      letter-spacing: -0.02em;
       box-shadow: 10px 10px 0 var(--yellow);
+      text-decoration: none;
+      color: inherit;
       transition: transform 0.8s var(--ease-pop), box-shadow 0.8s var(--ease-pop), background 0.35s ease;
+      min-height: 100%;
     }
-    #unique-content-882100 li a:hover,
-    #unique-content-882100 li a:focus-visible {
+    #unique-content-882100 .lab-card:hover,
+    #unique-content-882100 .lab-card:focus-visible {
       transform: translate(-5px, -5px);
       box-shadow: 15px 15px 0 var(--yellow);
       background: var(--yellow);
       outline: none;
     }
-    #unique-content-882100 li a:active {
+    #unique-content-882100 .lab-card:active {
       transform: translate(2px, 2px);
       box-shadow: 6px 6px 0 var(--yellow);
     }
-    #unique-content-882100 li a .lab-go {
+    #unique-content-882100 .lab-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1.15rem 1.15rem 0.75rem;
+    }
+    #unique-content-882100 .lab-tag {
+      display: inline-block;
+      padding: 0.2em 0.55em;
+      border: 3px solid var(--black);
+      background: var(--black);
+      color: var(--yellow);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    #unique-content-882100 .lab-go {
       flex-shrink: 0;
-      width: 2.75rem;
-      height: 2.75rem;
+      width: 2.5rem;
+      height: 2.5rem;
       display: grid;
       place-items: center;
       border: var(--border);
       background: var(--black);
       color: var(--yellow);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 900;
     }
-    #unique-content-882100 li a:hover .lab-go,
-    #unique-content-882100 li a:focus-visible .lab-go {
+    #unique-content-882100 .lab-card:hover .lab-go,
+    #unique-content-882100 .lab-card:focus-visible .lab-go {
       background: var(--white);
       color: var(--black);
     }
-    #unique-content-882100 .lab-meta {
-      display: block;
-      margin-top: 0.35rem;
-      font-size: 0.82rem;
-      font-weight: 600;
-      opacity: 0.85;
-      line-height: 1.45;
+    #unique-content-882100 .lab-card-body {
+      flex: 1;
+      padding: 0 1.15rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
-    #unique-content-882100 .lab-meta-em {
+    #unique-content-882100 .lab-card-title {
+      margin: 0;
+      font-size: 1.08rem;
       font-weight: 900;
-      text-decoration: underline;
-      text-underline-offset: 2px;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+    #unique-content-882100 .lab-card-desc {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 500;
+      line-height: 1.55;
+      opacity: 0.82;
     }
     #unique-content-882100 .lab-foot {
-      margin-top: 0.25rem;
-      padding-top: 1rem;
+      padding-top: clamp(1rem, 3vw, 1.5rem);
       border-top: var(--border);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      opacity: 0.65;
+      font-size: 0.82rem;
+      font-weight: 600;
+      opacity: 0.55;
+      text-align: center;
     }
     @media (prefers-reduced-motion: reduce) {
       #unique-content-882100 .lab-hero,
-      #unique-content-882100 li a { transition: none; }
+      #unique-content-882100 .lab-card { transition: none; }
       #unique-content-882100 .lab-hero:hover,
-      #unique-content-882100 li a:hover,
-      #unique-content-882100 li a:focus-visible { transform: none; }
+      #unique-content-882100 .lab-card:hover,
+      #unique-content-882100 .lab-card:focus-visible { transform: none; }
     }
   </style>
 </head>
 <body>
   <div id="unique-content-882100">
-    <div class="lab-stack">
+    <div class="lab-wrap">
       <header class="lab-hero">
-        <p class="lab-kicker">Static demos</p>
+        <p class="lab-kicker">Visual Content Lab</p>
         <h1 class="lab-title">Visual Content<br /><span>Lab</span></h1>
-        <p class="lab-lead">자료를 바탕으로 한 비주얼·인터랙티브 콘텐츠를 시연하기 위한 정적 페이지 모음입니다. GitHub Pages에 올려 바로 공유할 수 있습니다.</p>
+        <p class="lab-lead">기사·보도자료·교육 현장에서 쓸 수 있는 비주얼·인터랙티브 콘텐츠 데모 모음입니다. 아래 항목을 눌러 바로 체험해 보세요.</p>
       </header>
 
-      <section class="lab-panel" aria-labelledby="lab-demos-heading">
-        <h2 id="lab-demos-heading">Demos</h2>
-        <ul>
-          <li>
-            <a href="demos/xlsx-charts/">
+      <section aria-labelledby="lab-demos-heading">
+        <div class="lab-section-head">
+          <h2 id="lab-demos-heading">데모 갤러리</h2>
+          <p>총 6개 · 클릭하면 새 페이지에서 열립니다</p>
+        </div>
+        <div class="lab-gallery">
+          <a class="lab-card" href="demos/xlsx-charts/">
+            <div class="lab-card-top">
+              <span class="lab-tag">데이터</span>
               <span class="lab-go" aria-hidden="true">↗</span>
-              <span>
-                test.xlsx — 표 · 파이 · 바 연동
-                <span class="lab-meta">행을 고르면 차트가 같은 분포로 맞춰집니다.</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="demos/kolang-quiz/">
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">표 · 차트 연동</h3>
+              <p class="lab-card-desc">표에서 항목을 고르면 파이·막대 차트가 함께 바뀝니다. 수치를 독자에게 보여 줄 때 쓸 수 있는 형태의 예시입니다.</p>
+            </div>
+          </a>
+
+          <a class="lab-card" href="demos/kolang-quiz/">
+            <div class="lab-card-top">
+              <span class="lab-tag">퀴즈</span>
               <span class="lab-go" aria-hidden="true">↗</span>
-              <span>
-                kolang.xlsx — 기자 우리말 OX 퀴즈
-                <span class="lab-meta">10문항 · 정답 시 폭죽, 오답 시 화면 흔들림</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="demos/media-crossword/">
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">기자를 위한 우리말 퀴즈</h3>
+              <p class="lab-card-desc">기사·브리핑에서 자주 헷갈리는 표현을 OX로 풀어 보는 10문항 퀴즈입니다. 교육·워크숍용으로 활용할 수 있습니다.</p>
+            </div>
+          </a>
+
+          <a class="lab-card" href="demos/media-crossword/">
+            <div class="lab-card-top">
+              <span class="lab-tag">퀴즈</span>
               <span class="lab-go" aria-hidden="true">↗</span>
-              <span>
-                《신문과 방송》 가로세로 연결 퀴즈
-                <span class="lab-meta">NYT 스타일 격자 · 10단서 연쇄</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="demos/publication/">
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">언론 키워드 가로세로 퀴즈</h3>
+              <p class="lab-card-desc">《신문과 방송》 기사를 바탕으로 만든 가로세로낱말 퀴즈입니다. 단서를 따라 키워드를 채워 넣어 봅니다.</p>
+            </div>
+          </a>
+
+          <a class="lab-card" href="demos/publication/">
+            <div class="lab-card-top">
+              <span class="lab-tag">소개</span>
               <span class="lab-go" aria-hidden="true">↗</span>
-              <span>
-                출판물 1종 샘플 소개
-                <span class="lab-meta">표지 · Zotero용 메타태그 · BibTeX / RIS</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="apps/news-verification/">
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">출판물 소개 페이지</h3>
+              <p class="lab-card-desc">책·보고서 한 권을 소개하는 샘플 레이아웃입니다. 표지, 요약, 인용 정보를 한 페이지에 담은 예시입니다.</p>
+            </div>
+          </a>
+
+          <a class="lab-card" href="apps/news-verification/">
+            <div class="lab-card-top">
+              <span class="lab-tag">AI 도구</span>
               <span class="lab-go" aria-hidden="true">↗</span>
-              <span>
-                뉴스 사실확인 체크리스트 — AI 검토
-                <span class="lab-meta">KPF 부록 2 · 223항 · Gemini · 100점 만점 · <span class="lab-meta-em">팀장 유료 API 사용중</span></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="apps/news-verification-open/">
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">뉴스 사실확인 체크리스트</h3>
+              <p class="lab-card-desc">기사 원문을 붙여 넣으면 사실확인 항목별로 AI가 검토해 줍니다. 언론 윤리·팩트체크 교육용 데모입니다.</p>
+            </div>
+          </a>
+
+          <a class="lab-card" href="apps/news-verification-open/">
+            <div class="lab-card-top">
+              <span class="lab-tag">AI 도구</span>
               <span class="lab-go" aria-hidden="true">↗</span>
-              <span>
-                뉴스 사실확인 체크리스트 — AI 검토
-                <span class="lab-meta">KPF 부록 2 · 223항 · 허깅페이스(Hugging Face) 이용 버전 · 100점 만점</span>
-              </span>
-            </a>
-          </li>
-        </ul>
-        <p class="lab-foot">테마: #FACC15 · #000 · #fff · Pretendard · 굵은 테두리 + 노랑 단색 그림자</p>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">뉴스 사실확인 체크리스트 (공개 체험)</h3>
+              <p class="lab-card-desc">위와 같은 기능을 누구나 바로 체험할 수 있는 공개 데모 버전입니다. 별도 가입 없이 사용해 볼 수 있습니다.</p>
+            </div>
+          </a>
+        </div>
       </section>
+
+      <p class="lab-foot">Visual Content Lab · 언론·교육용 인터랙티브 콘텐츠 실험실</p>
     </div>
   </div>
 </body>
