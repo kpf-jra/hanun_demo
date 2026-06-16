@@ -30,48 +30,54 @@
       padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3rem) clamp(2rem, 6vw, 4rem);
       display: flex;
       flex-direction: column;
-      gap: clamp(2rem, 5vw, 3.5rem);
+      gap: clamp(1.5rem, 3vw, 2.25rem);
     }
     #unique-content-882100 .lab-hero {
       background: var(--white);
       border: var(--border);
-      box-shadow: var(--shadow);
-      padding: clamp(2rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 3rem);
+      box-shadow: 8px 8px 0 var(--yellow);
+      padding: clamp(1.1rem, 2.5vw, 1.5rem) clamp(1.15rem, 3vw, 1.75rem);
       transition: transform 0.8s var(--ease-pop), box-shadow 0.8s var(--ease-pop);
     }
     #unique-content-882100 .lab-hero:hover {
-      transform: translate(-4px, -4px);
-      box-shadow: 16px 16px 0 var(--yellow);
+      transform: translate(-3px, -3px);
+      box-shadow: 11px 11px 0 var(--yellow);
     }
     #unique-content-882100 .lab-kicker {
-      margin: 0 0 0.5rem;
-      font-size: 0.75rem;
+      margin: 0 0 0.3rem;
+      font-size: 0.65rem;
       font-weight: 800;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
+      opacity: 0.75;
     }
     #unique-content-882100 .lab-title {
       margin: 0;
-      font-size: clamp(2.25rem, 1.5rem + 4vw, 3.5rem);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35em 0.45em;
+      font-size: clamp(1.55rem, 1.15rem + 1.4vw, 2rem);
       font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 1.08;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
     }
     #unique-content-882100 .lab-title span {
       display: inline-block;
-      margin-top: 0.25rem;
-      padding: 0.08em 0.4em 0.12em;
+      margin-top: 0;
+      padding: 0.06em 0.35em 0.1em;
       background: var(--yellow);
-      border: var(--border);
-      box-shadow: 8px 8px 0 var(--black);
+      border: 3px solid var(--black);
+      box-shadow: 4px 4px 0 var(--black);
     }
     #unique-content-882100 .lab-lead {
-      margin: 1.25rem 0 0;
-      max-width: 42rem;
-      font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+      margin: 0.65rem 0 0;
+      max-width: 38rem;
+      font-size: clamp(0.88rem, 0.86rem + 0.12vw, 0.96rem);
       font-weight: 500;
       color: var(--black);
-      opacity: 0.88;
+      opacity: 0.82;
+      line-height: 1.5;
     }
     #unique-content-882100 .lab-toolbar {
       display: flex;
@@ -335,7 +341,7 @@
     <div class="lab-wrap">
       <header class="lab-hero">
         <p class="lab-kicker">Visual Content Lab</p>
-        <h1 class="lab-title">Visual Content<br /><span>Lab</span></h1>
+        <h1 class="lab-title">Visual Content <span>Lab</span></h1>
         <p class="lab-lead">기사·보도자료·교육 현장에서 쓸 수 있는 비주얼·인터랙티브 콘텐츠 데모 모음입니다. 아래 항목을 눌러 바로 체험해 보세요.</p>
       </header>
 
