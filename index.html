@@ -177,13 +177,17 @@
       background: var(--yellow);
       outline: none;
     }
+    #unique-content-882100 .lab-card:hover .lab-card-thumb,
+    #unique-content-882100 .lab-card:focus-visible .lab-card-thumb {
+      background: var(--white);
+    }
     #unique-content-882100 .lab-card:active {
       transform: translate(2px, 2px);
       box-shadow: 6px 6px 0 var(--yellow);
     }
     #unique-content-882100 .lab-card-thumb {
       padding: 0.85rem 0.85rem 0.25rem;
-      background: transparent;
+      background: var(--white);
       border-bottom: none;
     }
     #unique-content-882100 .lab-card-thumb-frame {
@@ -209,16 +213,6 @@
       );
       z-index: 1;
       pointer-events: none;
-      transition: background 0.35s ease;
-    }
-    #unique-content-882100 .lab-card:hover .lab-card-thumb-frame::after,
-    #unique-content-882100 .lab-card:focus-visible .lab-card-thumb-frame::after {
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(250, 204, 21, 0.42) 48%,
-        var(--yellow) 100%
-      );
     }
     #unique-content-882100 .lab-card-thumb-frame img {
       width: 100%;
