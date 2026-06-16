@@ -2,8 +2,15 @@
  * Cloudflare Dashboard "Quick edit"용 (Service Worker 형식)
  * export default 가 1101 오류 나면 이 파일 전체를 붙여넣고 Deploy 하세요.
  *
- * Secrets: GEMINI_API_KEY
+ * Secrets: GEMINI_API_KEY, HF_API_KEY, KOSIS_API_KEY
  */
+
+const KOSIS_ALLOWED_ENDPOINTS = new Set([
+  "statisticsList",
+  "statisticsData",
+  "statisticsExplData",
+  "Param/statisticsParameterData",
+]);
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -109,6 +116,77 @@ async function handleRequest(request, env) {
 
     return new Response(text, {
       status: 200,
+      headers: { "Content-Type": "application/json; charset=utf-8", ...CORS },
+    });
+  }
+
+  if (url.pathname === "/api/kosis/config" && request.method === "GET") {
+    return json({
+      kosisConfigured: Boolean(env && env.KOSIS_API_KEY),
+    });
+  }
+
+  if (url.pathname === "/api/kosis/proxy" && request.method === "GET") {
+    var endpoint = url.searchParams.get("endpoint") || "";
+    if (!KOSIS_ALLOWED_ENDPOINTS.has(endpoint)) {
+      return json(
+        {
+          error: {
+            message:
+              "endpoint는 statisticsList, statisticsData, statisticsExplData, Param/statisticsParameterData 중 하나여야 합니다.",
+          },
+        },
+        400
+      );
+    }
+
+    var kosisKey = env && env.KOSIS_API_KEY;
+    if (!kosisKey) {
+      return json(
+        {
+          error: {
+            message:
+              "KOSIS API 키가 없습니다. Worker Secrets에 KOSIS_API_KEY를 설정하세요.",
+          },
+        },
+        500
+      );
+    }
+
+    var upstreamParams = new URLSearchParams();
+    url.searchParams.forEach(function (value, key) {
+      if (key !== "endpoint") upstreamParams.append(key, value);
+    });
+    if (!upstreamParams.has("apiKey")) upstreamParams.set("apiKey", kosisKey);
+
+    var openApiBase =
+      (env && env.KOSIS_OPENAPI_BASE) || "https://kosis.kr/openapi";
+    var kosisUrl =
+      openApiBase.replace(/\/$/, "") +
+      "/" +
+      endpoint +
+      ".do?" +
+      upstreamParams.toString();
+
+    var kosisRes;
+    try {
+      kosisRes = await fetch(kosisUrl);
+    } catch (err) {
+      return json(
+        {
+          error: {
+            message:
+              "KOSIS API 연결 실패: " +
+              (err && err.message ? err.message : String(err)),
+          },
+        },
+        502
+      );
+    }
+
+    var kosisText = await kosisRes.text();
+    return new Response(kosisText, {
+      status: kosisRes.status,
       headers: { "Content-Type": "application/json; charset=utf-8", ...CORS },
     });
   }

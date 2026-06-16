@@ -4,8 +4,15 @@
  * Dashboard → Worker → Quick edit → 아래 전체 붙여넣기 → Deploy
  * (형식: ES modules — export default { async fetch(...) } 그대로 사용)
  *
- * [공용 키] Settings → Variables → Secrets → GEMINI_API_KEY, HF_API_KEY
+ * [공용 키] Settings → Variables → Secrets → GEMINI_API_KEY, HF_API_KEY, KOSIS_API_KEY
  */
+
+const KOSIS_ALLOWED_ENDPOINTS = new Set([
+  "statisticsList",
+  "statisticsData",
+  "statisticsExplData",
+  "Param/statisticsParameterData",
+]);
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -36,6 +43,8 @@ async function handleRequest(request, env) {
         "POST /api/gemini/generate",
         "GET /api/hf/config",
         "POST /api/hf/generate",
+        "GET /api/kosis/config",
+        "GET /api/kosis/proxy",
       ],
     });
   }
@@ -198,6 +207,80 @@ async function handleRequest(request, env) {
 
     return new Response(text, {
       status: 200,
+      headers: { "Content-Type": "application/json; charset=utf-8", ...CORS },
+    });
+  }
+
+  if (url.pathname === "/api/kosis/config" && request.method === "GET") {
+    return json({
+      kosisConfigured: Boolean(env && env.KOSIS_API_KEY),
+    });
+  }
+
+  if (url.pathname === "/api/kosis/proxy" && request.method === "GET") {
+    const endpoint = url.searchParams.get("endpoint") || "";
+    if (!KOSIS_ALLOWED_ENDPOINTS.has(endpoint)) {
+      return json(
+        {
+          error: {
+            message:
+              "endpoint는 statisticsList, statisticsData, statisticsExplData, Param/statisticsParameterData 중 하나여야 합니다.",
+          },
+        },
+        400
+      );
+    }
+
+    const apiKey = env && env.KOSIS_API_KEY;
+    if (!apiKey) {
+      return json(
+        {
+          error: {
+            message:
+              "KOSIS API 키가 없습니다. Worker Secrets에 KOSIS_API_KEY를 설정하세요.",
+          },
+        },
+        500
+      );
+    }
+
+    const upstreamParams = new URLSearchParams();
+    for (const [key, value] of url.searchParams.entries()) {
+      if (key === "endpoint") continue;
+      upstreamParams.append(key, value);
+    }
+    if (!upstreamParams.has("apiKey")) {
+      upstreamParams.set("apiKey", apiKey);
+    }
+
+    const openApiBase =
+      (env && env.KOSIS_OPENAPI_BASE) || "https://kosis.kr/openapi";
+    const upstreamUrl =
+      openApiBase.replace(/\/$/, "") +
+      "/" +
+      endpoint +
+      ".do?" +
+      upstreamParams.toString();
+
+    let upstream;
+    try {
+      upstream = await fetch(upstreamUrl);
+    } catch (err) {
+      return json(
+        {
+          error: {
+            message:
+              "KOSIS API 연결 실패: " +
+              (err && err.message ? err.message : String(err)),
+          },
+        },
+        502
+      );
+    }
+
+    const text = await upstream.text();
+    return new Response(text, {
+      status: upstream.status,
       headers: { "Content-Type": "application/json; charset=utf-8", ...CORS },
     });
   }

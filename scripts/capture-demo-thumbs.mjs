@@ -58,7 +58,12 @@ try {
     const url = BASE + demo.path;
     console.log("Capturing", url);
     await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-    await new Promise((r) => setTimeout(r, 800));
+    if (demo.slug === "kosis-api") {
+      await page.waitForSelector(".kosis-list-item", { timeout: 20000 }).catch(function () {});
+      await new Promise((r) => setTimeout(r, 1200));
+    } else {
+      await new Promise((r) => setTimeout(r, 800));
+    }
     const out = path.join(OUT_DIR, `${demo.slug}.webp`);
     await page.screenshot({ path: out, type: "webp", quality: 82 });
     console.log("  →", path.relative(ROOT, out));

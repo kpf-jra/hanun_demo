@@ -495,11 +495,12 @@
 
       <p class="kosis-note">
         출처: 통계청 KOSIS · API 호출은 브라우저 CORS 제약을 피하기 위해 로컬 서버 프록시(<code>/api/kosis/proxy</code>)를 경유합니다.
-        출처: 통계청 KOSIS · 한국언론진흥재단(413) 전체 374개 통계표 중 OpenAPI 수치 제공은 「신문·잡지산업실태조사 > 신문산업」 16개뿐입니다.
-        잡지산업·소셜미디어·청소년 조사는 KOSIS 웹에서만 조회됩니다.
+        출처: 통계청 KOSIS · GitHub Pages에서는 Cloudflare Worker 프록시를 경유합니다.
+        Worker에 <code>KOSIS_API_KEY</code> Secret과 <code>workers/gemini-proxy.js</code> 최신 배포가 필요합니다.
       </p>
     </div>
   </div>
+  <script src="config.public.js"></script>
   <script src="kosis-demo.js"></script>
 </body>
 </html>

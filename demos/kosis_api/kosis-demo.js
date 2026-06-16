@@ -4,6 +4,9 @@
 
   var API_PROXY = "/api/kosis/proxy";
   var DATA_ENDPOINT = "Param/statisticsParameterData";
+  var KOSIS_CFG = window.KOSIS_CONFIG || {};
+  var IS_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var PROXY_BASE = (KOSIS_CFG.proxyUrl || "").replace(/\/$/, "");
   var ORG = {
     id: "413",
     name: "한국언론진흥재단",
@@ -67,6 +70,11 @@
     reloadBtn: ROOT.querySelector("#kosis-reload-btn"),
   };
 
+  function apiUrl(path) {
+    if (IS_LOCAL) return path;
+    return PROXY_BASE ? PROXY_BASE + path : path;
+  }
+
   function proxyUrl(endpoint, params) {
     var q = new URLSearchParams({ endpoint: endpoint });
     Object.keys(params).forEach(function (key) {
@@ -74,7 +82,7 @@
         q.set(key, String(params[key]));
       }
     });
-    return API_PROXY + "?" + q.toString();
+    return apiUrl(API_PROXY + "?" + q.toString());
   }
 
   function fetchJson(endpoint, params) {
@@ -983,7 +991,7 @@
 
   function init() {
     initEvents();
-    fetch("/api/kosis/config")
+    fetch(apiUrl("/api/kosis/config"))
       .then(function (res) {
         return res.text().then(function (text) {
           try {
@@ -1001,8 +1009,11 @@
           els.setup.hidden = state.configured;
         }
         if (!state.configured) {
-          setListStatus("API 키 설정 후 서버를 재시작하세요.");
-          setPanelStatus("KOSIS_API_KEY가 .env에 없습니다.", true);
+          setListStatus("KOSIS API 키가 설정되지 않았습니다.");
+          setPanelStatus(
+            "서버(.env) 또는 Cloudflare Worker Secrets에 KOSIS_API_KEY를 설정한 뒤 다시 시도하세요.",
+            true
+          );
           return;
         }
         loadApiTableList();
@@ -1011,12 +1022,14 @@
         var missingProxy = err && err.message === "KOSIS_CONFIG_NOT_FOUND";
         setListStatus(
           missingProxy
-            ? "node server.mjs 로 서버를 실행·재시작하세요. (KOSIS API 프록시 없음)"
+            ? "API 프록시에 연결할 수 없습니다."
             : "서버 설정을 확인할 수 없습니다."
         );
         if (missingProxy) {
           setPanelStatus(
-            "Live Server 등으로 HTML만 열면 API가 동작하지 않습니다. node server.mjs 후 http://localhost:3456/demos/kosis_api/ 로 접속하세요.",
+            IS_LOCAL
+              ? "node server.mjs 로 서버를 실행한 뒤 http://localhost:3456/demos/kosis_api/ 로 접속하세요."
+              : "Cloudflare Worker(gemini-proxy)에 KOSIS 라우트가 배포됐는지, config.public.js의 proxyUrl이 맞는지 확인하세요.",
             true
           );
         }
