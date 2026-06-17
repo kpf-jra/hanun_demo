@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.mjs",
     "check:pdf-align": "node apps/news-verification-open/tools/check-pdf-align.mjs",
-    "thumbs": "node scripts/capture-demo-thumbs.mjs"
+    "thumbs": "node scripts/capture-demo-thumbs.mjs",
+    "build:kolang-quiz": "python demos/kolang-quiz/build-bank.py"
   },
   "devDependencies": {
     "puppeteer": "^24.11.2"
