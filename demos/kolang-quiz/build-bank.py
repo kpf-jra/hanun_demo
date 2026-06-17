@@ -20,10 +20,11 @@ BANK_JSON = ROOT / "bank.json"
 INDEX_HTML = ROOT / "index.html"
 
 
-def split_phrases(value: object) -> list[str]:
+def cell_phrase(value: object) -> list[str]:
     if value is None:
         return []
-    return [part.strip() for part in str(value).split("/") if part.strip()]
+    text = str(value).strip()
+    return [text] if text else []
 
 
 def load_bank() -> list[dict]:
@@ -38,8 +39,8 @@ def load_bank() -> list[dict]:
         bank.append(
             {
                 "type": "mistake",
-                "wrong": split_phrases(wrong),
-                "right": split_phrases(right),
+                "wrong": cell_phrase(wrong),
+                "right": cell_phrase(right),
                 "explain": str(explain).strip() if explain else "",
             }
         )
@@ -52,8 +53,8 @@ def load_bank() -> list[dict]:
         bank.append(
             {
                 "type": "overlap",
-                "wrong": split_phrases(wrong),
-                "right": split_phrases(right),
+                "wrong": cell_phrase(wrong),
+                "right": cell_phrase(right),
             }
         )
 
