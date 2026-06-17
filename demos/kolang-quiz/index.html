@@ -334,14 +334,22 @@
     return (code - 0xac00) % 28 === 0 ? "가" : "이";
   }
 
-  function buildExplain(row, phrase, isRightPhrase) {
+  function phraseIsWrong(row, phrase) {
+    var i;
+    for (i = 0; i < row.wrong.length; i++) {
+      if (row.wrong[i] === phrase) return true;
+    }
+    return false;
+  }
+
+  function buildExplain(row, phrase) {
     if (row.type === "overlap") {
-      if (isRightPhrase) {
-        var wrongText = joinPhrases(row.wrong);
-        return "\"" + wrongText + "\"" + topicParticle(wrongText) + " 겹말로 좋은 표현이 아닙니다.";
+      if (phraseIsWrong(row, phrase)) {
+        var rightText = joinPhrases(row.right);
+        return "겹말입니다. \"" + rightText + "\"" + subjectParticle(rightText) + " 옳은 표현입니다.";
       }
-      var rightText = joinPhrases(row.right);
-      return "겹말입니다. \"" + rightText + "\"" + subjectParticle(rightText) + " 옳은 표현입니다.";
+      var wrongText = joinPhrases(row.wrong);
+      return "\"" + wrongText + "\"" + topicParticle(wrongText) + " 겹말로 좋은 표현이 아닙니다.";
     }
     return row.explain;
   }
@@ -350,11 +358,10 @@
     var useRight = Math.random() < 0.5;
     var pool = useRight ? row.right : row.wrong;
     var phrase = pool[Math.floor(Math.random() * pool.length)];
-    var isRightPhrase = useRight;
     return {
       phrase: phrase,
-      answerIsO: isRightPhrase,
-      explain: buildExplain(row, phrase, isRightPhrase)
+      answerIsO: useRight,
+      row: row
     };
   }
 
@@ -499,7 +506,7 @@
     if (correct) score++;
 
     elResultLabel.textContent = correct ? "정답!" : "오답";
-    elExplain.textContent = q.explain;
+    elExplain.textContent = buildExplain(q.row, q.phrase);
     elFeedback.classList.add("uc-on");
 
     if (correct) {
