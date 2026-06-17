@@ -362,6 +362,41 @@
     return map;
   }
 
+  var TOTAL_LABEL_PATTERNS = ["합계", "전체", "계", "소계", "총계"];
+
+  function labelsPresentInData(rows, field) {
+    var present = {};
+    rows.forEach(function (row) {
+      var label = row[field];
+      if (label) present[label] = true;
+    });
+    return present;
+  }
+
+  function resolveDimensionTotalLabel(itmRows, objId, rows, field) {
+    if (!objId) return "";
+    var present = labelsPresentInData(rows, field);
+    for (var i = 0; i < TOTAL_LABEL_PATTERNS.length; i++) {
+      if (present[TOTAL_LABEL_PATTERNS[i]]) return TOTAL_LABEL_PATTERNS[i];
+    }
+    var tree = buildTreeOrder(itmRows, objId);
+    for (var j = 0; j < tree.length; j++) {
+      if (tree[j].depth === 0 && present[tree[j].name]) return tree[j].name;
+    }
+    for (var k = 0; k < tree.length; k++) {
+      if (present[tree[k].name]) return tree[k].name;
+    }
+    return "";
+  }
+
+  function resolveColFilterLabel(itmRows, colObjId, colTotalLabel, rows) {
+    if (!colObjId) return "";
+    var present = labelsPresentInData(rows, "C2_NM");
+    if (colTotalLabel && present[colTotalLabel]) return colTotalLabel;
+    var labels = orderedColumnLabels(itmRows, colObjId, rows, "C2_NM");
+    return labels[0] || "";
+  }
+
   function orderedColumnLabels(itmRows, objId, rows, field) {
     var present = {};
     rows.forEach(function (row) {
@@ -403,6 +438,7 @@
       mode = "years";
     }
 
+    var colTotalLabel = resolveDimensionTotalLabel(itmRows, colObjId, rows, "C2_NM");
     return {
       mode: mode,
       years: years,
@@ -411,6 +447,9 @@
       rowObjNm: rowObjNm,
       colObjNm: colObjNm,
       itemNm: itemNm,
+      rowTotalLabel: resolveDimensionTotalLabel(itmRows, rowObjId, rows, "C1_NM"),
+      colTotalLabel: colTotalLabel,
+      colFilterLabel: resolveColFilterLabel(itmRows, colObjId, colTotalLabel, rows),
       rowOrder: rowObjId ? buildTreeOrder(itmRows, rowObjId) : [],
       columnLabels:
         mode === "matrix"
@@ -505,13 +544,18 @@
   }
 
   function pickChartRows(rows, layout) {
+    var rowTotal = layout.rowTotalLabel || "합계";
+    var colFilter = layout.colFilterLabel || layout.colTotalLabel || "";
     if (layout.mode === "matrix" || layout.mode === "years-total") {
       return rows.filter(function (row) {
-        return row.C1_NM === "합계" && (row.C2_NM === "합계" || !row.C2_NM);
+        return (
+          row.C1_NM === rowTotal &&
+          (row.C2_NM === colFilter || !row.C2_NM)
+        );
       });
     }
     return rows.filter(function (row) {
-      return row.C1_NM === "합계" || !row.C2_NM;
+      return row.C1_NM === rowTotal || !row.C2_NM;
     });
   }
 
@@ -750,8 +794,17 @@
     var valueMap = buildValueMap(rows);
     var unit = rows[0] && rows[0].UNIT_NM ? rows[0].UNIT_NM : "";
     var html = '<div class="kosis-table-scroll">';
-    if (unit) {
-      html += '<p class="kosis-table-unit">(단위: ' + escapeHtml(unit) + ")</p>";
+    if (unit || (layout.mode === "years-total" && layout.colFilterLabel)) {
+      html += '<p class="kosis-table-unit">';
+      if (layout.mode === "years-total" && layout.colFilterLabel) {
+        html +=
+          escapeHtml(layout.colObjNm) +
+          ": " +
+          escapeHtml(layout.colFilterLabel);
+        if (unit) html += " · ";
+      }
+      if (unit) html += "(단위: " + escapeHtml(unit) + ")";
+      html += "</p>";
     }
     html += '<table class="kosis-table"><thead>';
 
@@ -768,14 +821,14 @@
       layout.rowOrder.forEach(function (node) {
         if (node.depth > 0) return;
         if (!rows.some(function (row) { return row.C1_NM === node.name; })) return;
-        html = appendYearRow(html, layout, valueMap, node, "합계");
+        html = appendYearRow(html, layout, valueMap, node, layout.colFilterLabel);
         if (node.hasChildren) {
           layout.rowOrder
             .filter(function (child) {
               return child.parentId === node.id;
             })
             .forEach(function (child) {
-              html = appendYearRow(html, layout, valueMap, child, "합계");
+              html = appendYearRow(html, layout, valueMap, child, layout.colFilterLabel);
             });
         }
       });
