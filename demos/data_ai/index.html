@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>신문산업 매출액 — 데이터 AI 데모</title>
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="../../assets/lab-demo-header.css" />
+  <style>
+    #unique-content-data-ai,
+    #unique-content-data-ai * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    #unique-content-data-ai {
+      --yellow: #facc15;
+      --black: #000000;
+      --white: #ffffff;
+      --green-a11y: #15803d;
+      --shadow: 12px 12px 0 var(--yellow);
+      --border: 4px solid var(--black);
+      --ease-ui: cubic-bezier(0.65, 0, 0.35, 1);
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.5;
+      font-size: clamp(0.875rem, 0.82rem + 0.2vw, 0.95rem);
+      padding: clamp(0.75rem, 3vw, 1.25rem);
+      padding-bottom: clamp(2rem, 5vw, 3rem);
+    }
+    #unique-content-data-ai .dai-inner {
+      max-width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+    #unique-content-data-ai .dai-setup {
+      margin: 0 0 1rem;
+      padding: 0.85rem 1rem;
+      border: var(--border);
+      background: #fff7d6;
+      box-shadow: 8px 8px 0 var(--yellow);
+      font-weight: 600;
+      line-height: 1.55;
+      font-size: 0.85rem;
+    }
+    #unique-content-data-ai .dai-setup code {
+      font-size: 0.85em;
+      background: rgba(0, 0, 0, 0.06);
+      padding: 0.1em 0.35em;
+    }
+    #unique-content-data-ai .dai-key-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.65rem;
+      align-items: center;
+    }
+    #unique-content-data-ai .dai-key-row input {
+      flex: 1 1 14rem;
+      font: inherit;
+      padding: 0.5rem 0.65rem;
+      border: 3px solid var(--black);
+      min-width: 0;
+    }
+    #unique-content-data-ai .dai-key-row select {
+      font: inherit;
+      padding: 0.5rem 0.65rem;
+      border: 3px solid var(--black);
+      font-weight: 700;
+      background: var(--white);
+    }
+    #unique-content-data-ai .dai-hidden { display: none !important; }
+    #unique-content-data-ai .dai-err { color: #b91c1c; font-weight: 800; }
+    #unique-content-data-ai .dai-muted { opacity: 0.7; font-weight: 600; }
+    #unique-content-data-ai .dai-loading {
+      font-weight: 800;
+      opacity: 0.75;
+      animation: dai-pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes dai-pulse {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 1; }
+    }
+    #unique-content-data-ai .dai-stack {
+      display: grid;
+      gap: clamp(1rem, 2.5vw, 1.35rem);
+    }
+    #unique-content-data-ai .dai-panel {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    #unique-content-data-ai .dai-panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      background: var(--yellow);
+      border-bottom: var(--border);
+    }
+    #unique-content-data-ai .dai-panel-title {
+      margin: 0;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    #unique-content-data-ai .dai-panel-meta {
+      font-size: 0.72rem;
+      font-weight: 700;
+      opacity: 0.8;
+      font-variant-numeric: tabular-nums;
+    }
+    #unique-content-data-ai .dai-btn {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 900;
+      padding: 0.45rem 0.95rem;
+      border: 3px solid var(--black);
+      background: var(--white);
+      color: var(--black);
+      cursor: pointer;
+      box-shadow: 5px 5px 0 var(--black);
+      transition: transform 0.5s var(--ease-ui), background 0.3s ease;
+    }
+    #unique-content-data-ai .dai-btn:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      background: var(--black);
+      color: var(--yellow);
+    }
+    #unique-content-data-ai .dai-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    #unique-content-data-ai .dai-scroll {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      max-height: min(58vh, 480px);
+    }
+    #unique-content-data-ai table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(0.65rem, 0.6rem + 0.15vw, 0.76rem);
+    }
+    #unique-content-data-ai th,
+    #unique-content-data-ai td {
+      padding: 0.5rem 0.45rem;
+      border-bottom: 2px solid var(--black);
+      vertical-align: middle;
+    }
+    #unique-content-data-ai thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--black);
+      color: var(--yellow);
+      font-weight: 900;
+      text-align: center;
+      white-space: nowrap;
+      border-bottom: 3px solid var(--black);
+    }
+    #unique-content-data-ai thead tr:first-child th {
+      top: 0;
+    }
+    #unique-content-data-ai thead tr:nth-child(2) th {
+      top: 2.1rem;
+      font-size: 0.62rem;
+      letter-spacing: -0.01em;
+    }
+    #unique-content-data-ai td.dai-label,
+    #unique-content-data-ai thead th:first-child,
+    #unique-content-data-ai thead th:nth-child(2),
+    #unique-content-data-ai thead th:nth-child(3) {
+      text-align: left;
+    }
+    #unique-content-data-ai td.dai-num {
+      text-align: right;
+      font-weight: 700;
+    }
+    #unique-content-data-ai td.dai-label {
+      font-weight: 800;
+      text-align: left;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: inherit;
+      max-width: 8rem;
+    }
+    #unique-content-data-ai tbody tr {
+      background: var(--white);
+      transition: background 0.4s var(--ease-ui);
+    }
+    #unique-content-data-ai tbody tr.dai-row-alt {
+      background: #fffbeb;
+    }
+    #unique-content-data-ai tbody tr:hover {
+      background: var(--yellow);
+    }
+    #unique-content-data-ai .dai-body {
+      padding: clamp(0.85rem, 2vw, 1.1rem);
+    }
+    #unique-content-data-ai .dai-prose {
+      font-weight: 600;
+      line-height: 1.65;
+    }
+    #unique-content-data-ai .dai-prose p {
+      margin: 0 0 0.65rem;
+    }
+    #unique-content-data-ai .dai-prose-h {
+      margin: 1rem 0 0.45rem;
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+    }
+    #unique-content-data-ai .dai-prose-h:first-child {
+      margin-top: 0;
+    }
+    #unique-content-data-ai .dai-prose-li {
+      margin: 0 0 0.45rem;
+      padding-left: 0.15rem;
+    }
+    #unique-content-data-ai .dai-chat-msg--thinking {
+      opacity: 0.92;
+      border-style: dashed;
+    }
+    #unique-content-data-ai .dai-thinking {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 800;
+      opacity: 0.8;
+    }
+    #unique-content-data-ai .dai-thinking-pulse {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--black);
+      flex-shrink: 0;
+      animation: dai-pulse 1s ease-in-out infinite;
+    }
+    #unique-content-data-ai .dai-example-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+    #unique-content-data-ai .dai-about {
+      margin-top: clamp(1rem, 2.5vw, 1.35rem);
+      padding: clamp(0.85rem, 2vw, 1.1rem);
+      border: var(--border);
+      box-shadow: 8px 8px 0 var(--yellow);
+      background: #fffbeb;
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.65;
+    }
+    #unique-content-data-ai .dai-about h2 {
+      margin: 0 0 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    #unique-content-data-ai .dai-about p {
+      margin: 0 0 0.65rem;
+    }
+    #unique-content-data-ai .dai-about p:last-child {
+      margin-bottom: 0;
+    }
+    #unique-content-data-ai .dai-about ul {
+      margin: 0.35rem 0 0.65rem;
+      padding-left: 1.15rem;
+    }
+    #unique-content-data-ai .dai-about li {
+      margin-bottom: 0.3rem;
+    }
+    #unique-content-data-ai .dai-chat-log {
+      min-height: 10rem;
+      max-height: 22rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-bottom: 0.75rem;
+      padding: 0.25rem 0;
+    }
+    #unique-content-data-ai .dai-chat-msg {
+      border: 3px solid var(--black);
+      padding: 0.65rem 0.85rem;
+      box-shadow: 6px 6px 0 var(--yellow);
+      max-width: 92%;
+    }
+    #unique-content-data-ai .dai-chat-msg--user {
+      align-self: flex-end;
+      background: var(--black);
+      color: var(--yellow);
+      box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
+    }
+    #unique-content-data-ai .dai-chat-msg--bot {
+      align-self: flex-start;
+      background: var(--white);
+    }
+    #unique-content-data-ai .dai-chat-role {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+      opacity: 0.75;
+    }
+    #unique-content-data-ai .dai-chat-text {
+      font-weight: 600;
+      line-height: 1.55;
+    }
+    #unique-content-data-ai .dai-chat-form {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    #unique-content-data-ai .dai-chat-form input {
+      flex: 1 1 14rem;
+      font: inherit;
+      padding: 0.6rem 0.75rem;
+      border: var(--border);
+      min-width: 0;
+    }
+    #unique-content-data-ai .dai-chat-form input:focus-visible {
+      outline: 3px solid var(--green-a11y);
+      outline-offset: 2px;
+    }
+    #unique-content-data-ai .dai-chat-hint {
+      margin: 0.55rem 0 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0.65;
+    }
+    #unique-content-data-ai .dai-examples {
+      margin-top: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    #unique-content-data-ai .dai-examples-label {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.55;
+    }
+    #unique-content-data-ai .dai-example-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    #unique-content-data-ai .dai-example-btn {
+      font: inherit;
+      text-align: left;
+      padding: 0.55rem 0.75rem;
+      border: 3px solid var(--black);
+      background: var(--white);
+      box-shadow: 5px 5px 0 var(--yellow);
+      font-weight: 700;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: transform 0.4s var(--ease-ui), background 0.3s ease;
+    }
+    #unique-content-data-ai .dai-example-btn:hover {
+      transform: translate(-2px, -2px);
+      background: var(--yellow);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #unique-content-data-ai .dai-btn,
+      #unique-content-data-ai tbody tr,
+      #unique-content-data-ai .dai-loading { transition: none; animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="unique-content-data-ai">
+    <div class="ldh-mast">
+      <div>
+        <p class="ldh-kicker">Data · AI</p>
+        <h1 class="ldh-title">신문산업 매출액 · AI 해설</h1>
+      </div>
+      <a class="ldh-back" href="../../index.html">← Lab</a>
+    </div>
+    <p class="ldh-lead">
+      KOSIS에서 내려받은 <strong>신문산업 매출액</strong> 표를 그대로 보여 주고, Gemini가 요약·인사이트를 제시합니다.
+      챗봇은 <strong>이 표에 관한 질문만</strong> 답합니다.
+    </p>
+
+    <div class="dai-inner">
+      <div class="dai-setup" id="dai-setup">
+        <div id="dai-api-status">API 설정 확인 중…</div>
+        <div class="dai-key-row">
+          <label>
+            <span class="dai-muted" style="font-size:0.75rem;font-weight:800;margin-right:0.35rem">모델</span>
+            <select id="dai-model" aria-label="Gemini 모델">
+              <option value="gemini-2.5-flash">gemini-2.5-flash (추천)</option>
+              <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (저렴)</option>
+              <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+            </select>
+          </label>
+        </div>
+        <div class="dai-key-row dai-hidden" id="dai-key-wrap">
+          <input type="password" id="dai-api-key" placeholder="Gemini API 키" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="dai-stack">
+        <section class="dai-panel" aria-labelledby="dai-table-heading">
+          <div class="dai-panel-head">
+            <h2 class="dai-panel-title" id="dai-table-heading">01 · 데이터 표</h2>
+            <span class="dai-panel-meta" id="dai-table-meta">불러오는 중…</span>
+          </div>
+          <div id="dai-table-wrap">
+            <p class="dai-body dai-muted">표를 불러오는 중…</p>
+          </div>
+        </section>
+
+        <section class="dai-panel" aria-labelledby="dai-insight-heading">
+          <div class="dai-panel-head">
+            <h2 class="dai-panel-title" id="dai-insight-heading">02 · AI 분석</h2>
+            <button type="button" class="dai-btn" id="dai-insight-btn">다시 분석</button>
+          </div>
+          <div class="dai-body" id="dai-insight-body"></div>
+        </section>
+
+        <section class="dai-panel" aria-labelledby="dai-chat-heading">
+          <div class="dai-panel-head">
+            <h2 class="dai-panel-title" id="dai-chat-heading">03 · 표 전용 챗봇</h2>
+          </div>
+          <div class="dai-body">
+            <div class="dai-chat-log" id="dai-chat-log" aria-live="polite"></div>
+            <div class="dai-chat-form">
+              <input
+                type="text"
+                id="dai-chat-input"
+                placeholder="예: 2024년 일간신문 매출은? 2010년 대비 인터넷신문 추이는?"
+                autocomplete="off"
+              />
+              <button type="button" class="dai-btn" id="dai-chat-send">질문하기</button>
+            </div>
+            <p class="dai-chat-hint">
+              이 표와 무관한 질문에는 답하지 않습니다.
+            </p>
+            <div class="dai-examples">
+              <p class="dai-examples-label">예시 질문</p>
+              <div class="dai-example-list">
+                <button type="button" class="dai-example-btn" data-question="2020년부터 2024년까지 신문산업 전체 매출액이 어떻게 변했는지, 연도별 수치와 함께 설명해 줘.">
+                  2020~2024년 전체 매출 추이 — 연도별 수치와 변화 설명
+                </button>
+                <button type="button" class="dai-example-btn" data-question="2023년 종이신문 소계와 인터넷신문 소계의 매출액을 비교하고, 어느 쪽이 더 큰지 알려줘.">
+                  2023년 종이신문 vs 인터넷신문 소계 매출 비교
+                </button>
+                <button type="button" class="dai-example-btn" data-question="2015년 합계 행의 매출액, 기업공시업체수, 기업공시업체매출액 세 가지 지표를 각각 알려줘.">
+                  2015년 합계 — 매출액·기업공시업체수·기업공시업체매출액
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="dai-about" aria-labelledby="dai-about-heading">
+        <h2 id="dai-about-heading">이 데모는 어떻게 동작하나요?</h2>
+        <p>
+          엑셀 표를 그대로 AI에 넘기지 않고, <strong>항목·연도·지표·수치</strong>가 분리된 JSON 레코드로 바꿔 전달합니다.
+          질문마다 관련 행만 골라 Gemini에 넘기고, 표 밖 질문은 거절합니다.
+        </p>
+        <p><strong>현재</strong></p>
+        <ul>
+          <li>표 렌더링 + 기본 요약(고정) · 「다시 분석」으로 AI 요약 재생성</li>
+          <li>질문 유형별 필터(연도 범위, 비교, 소계 등)와 프롬프트 분기</li>
+          <li>표 관련 여부 규칙 판별 + Gemini 모델 선택</li>
+        </ul>
+        <p><strong>앞으로 개선할 수 있는 방향</strong></p>
+        <ul>
+          <li>단순 수치 조회는 코드가 직접 답하고, 추이·비교만 AI가 설명 (환각 감소)</li>
+          <li>증감·변화폭 등 파생 지표를 미리 계산해 함께 제공</li>
+          <li>AI 답변의 숫자가 표에 실제 있는지 검증하는 단계 추가</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+
+  <script src="config.public.js"></script>
+  <script src="data-ai.js"></script>
+</body>
+</html>
