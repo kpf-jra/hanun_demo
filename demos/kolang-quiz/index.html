@@ -326,13 +326,22 @@
     return (code - 0xac00) % 28 === 0 ? "는" : "은";
   }
 
+  function subjectParticle(phrase) {
+    var ch = phrase.charAt(phrase.length - 1);
+    if (!ch) return "가";
+    var code = ch.charCodeAt(0);
+    if (code < 0xac00 || code > 0xd7a3) return "가";
+    return (code - 0xac00) % 28 === 0 ? "가" : "이";
+  }
+
   function buildExplain(row, phrase, isRightPhrase) {
     if (row.type === "overlap") {
       if (isRightPhrase) {
         var wrongText = joinPhrases(row.wrong);
         return "\"" + wrongText + "\"" + topicParticle(wrongText) + " 겹말로 좋은 표현이 아닙니다.";
       }
-      return joinPhrases(row.right) + ". \"" + phrase + "\"의 겹말입니다.";
+      var rightText = joinPhrases(row.right);
+      return "겹말입니다. \"" + rightText + "\"" + subjectParticle(rightText) + " 옳은 표현입니다.";
     }
     return row.explain;
   }
