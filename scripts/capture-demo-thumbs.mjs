@@ -20,6 +20,7 @@ const DEMOS = [
   { slug: "publication", path: "/demos/publication/" },
   { slug: "news-verification", path: "/apps/news-verification/" },
   { slug: "news-verification-open", path: "/apps/news-verification-open/" },
+  { slug: "data-ai", path: "/demos/data_ai/" },
 ];
 
 function resolveChromePath() {
@@ -60,6 +61,9 @@ try {
     await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
     if (demo.slug === "kosis-api") {
       await page.waitForSelector(".kosis-list-item", { timeout: 20000 }).catch(function () {});
+      await new Promise((r) => setTimeout(r, 1200));
+    } else if (demo.slug === "data-ai") {
+      await page.waitForSelector("#dai-table-wrap table", { timeout: 20000 }).catch(function () {});
       await new Promise((r) => setTimeout(r, 1200));
     } else {
       await new Promise((r) => setTimeout(r, 800));

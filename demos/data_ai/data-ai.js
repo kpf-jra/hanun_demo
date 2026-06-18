@@ -31,7 +31,6 @@
   };
 
   var els = {
-    apiStatus: ROOT.querySelector("#dai-api-status"),
     keyWrap: ROOT.querySelector("#dai-key-wrap"),
     apiKey: ROOT.querySelector("#dai-api-key"),
     tableWrap: ROOT.querySelector("#dai-table-wrap"),
@@ -41,7 +40,6 @@
     chatLog: ROOT.querySelector("#dai-chat-log"),
     chatInput: ROOT.querySelector("#dai-chat-input"),
     chatSend: ROOT.querySelector("#dai-chat-send"),
-    modelSelect: ROOT.querySelector("#dai-model"),
   };
 
   function apiUrl(path) {
@@ -448,34 +446,11 @@
       var res = await fetch(apiUrl("/api/config"));
       var cfg = await res.json();
       state.serverHasKey = Boolean(cfg.geminiConfigured);
-      if (cfg.defaultModel && els.modelSelect) {
-        if (els.modelSelect.querySelector('option[value="' + cfg.defaultModel + '"]')) {
-          state.model = cfg.defaultModel;
-        }
-      }
-      if (els.modelSelect) {
-        els.modelSelect.value = state.model;
-        els.modelSelect.addEventListener("change", function () {
-          state.model = els.modelSelect.value;
-        });
-      }
-      if (state.serverHasKey) {
-        els.apiStatus.textContent = IS_LOCAL
-          ? "로컬 서버(.env) Gemini API 연결됨 · 모델: " + state.model
-          : "서버 API 키 연결됨 · 모델: " + state.model;
-        els.keyWrap.classList.add("dai-hidden");
-      } else {
-        loadStoredApiKey();
-        els.apiStatus.innerHTML = IS_LOCAL
-          ? '.env에 <code>gemini_api_key</code>가 없습니다. 아래에 키를 입력하거나 서버를 재시작하세요.'
-          : '<a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Gemini API 키</a>를 입력하세요.';
-        els.keyWrap.classList.remove("dai-hidden");
-      }
-    } catch (err) {
-      els.apiStatus.innerHTML = IS_LOCAL
-        ? '<span class="dai-err">로컬 API 연결 실패.</span> <code>node server.mjs</code> 실행 후 이 페이지를 여세요.'
-        : '<span class="dai-err">Worker 연결 실패.</span> 잠시 후 다시 시도하세요.';
-      els.keyWrap.classList.remove("dai-hidden");
+      if (cfg.defaultModel) state.model = cfg.defaultModel;
+      if (!state.serverHasKey) loadStoredApiKey();
+    } catch (_) {
+      state.serverHasKey = false;
+      loadStoredApiKey();
     }
   }
 
