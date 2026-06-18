@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Visual AI Content Lab</title>
-  <meta name="description" content="기사·보도자료·교육용 비주얼·인터랙티브 콘텐츠 데모 모음" />
+  <meta name="description" content="미디어·저널리즘 관련 데이터를 활용한 비주얼·인터랙티브 콘텐츠 데모 모음" />
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     #unique-content-882100,
@@ -71,13 +71,20 @@
       box-shadow: 4px 4px 0 var(--black);
     }
     #unique-content-882100 .lab-lead {
-      margin: 0.65rem 0 0;
-      max-width: 38rem;
-      font-size: clamp(0.88rem, 0.86rem + 0.12vw, 0.96rem);
+      margin: 1.35rem 0 0;
+      max-width: none;
+      font-size: clamp(0.84rem, 0.8rem + 0.12vw, 0.94rem);
       font-weight: 500;
       color: var(--black);
       opacity: 0.82;
       line-height: 1.5;
+      white-space: nowrap;
+    }
+    @media (max-width: 960px) {
+      #unique-content-882100 .lab-lead {
+        white-space: normal;
+        max-width: 42rem;
+      }
     }
     #unique-content-882100 .lab-toolbar {
       display: flex;
@@ -335,7 +342,7 @@
     <div class="lab-wrap">
       <header class="lab-hero">
         <h1 class="lab-title">Visual AI Content <span>Lab</span></h1>
-        <p class="lab-lead">기사·보도자료·교육 현장에서 쓸 수 있는 비주얼·인터랙티브 콘텐츠 데모 모음입니다. 아래 항목을 눌러 바로 체험해 보세요.</p>
+        <p class="lab-lead">미디어·저널리즘 관련 데이터를 활용한 비주얼·인터랙티브 콘텐츠 데모 모음입니다. 아래 갤러리에서 바로 사용해볼 수 있습니다.</p>
       </header>
 
       <section aria-labelledby="lab-demos-heading">
