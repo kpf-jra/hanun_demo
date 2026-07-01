@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Mem-Abook">
+  <rect width="640" height="400" fill="#ffffff"/>
+  <rect x="24" y="24" width="592" height="56" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="40" y="62" font-family="system-ui,sans-serif" font-size="22" font-weight="900" fill="#000000">Mem-Abook</text>
+  <text x="500" y="62" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#666666">Day 1</text>
+  <rect x="24" y="96" width="592" height="72" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="40" y="140" font-family="system-ui,sans-serif" font-size="20" font-weight="800" fill="#000000">Shadowing</text>
+  <rect x="24" y="184" width="592" height="120" fill="#f8fafc" stroke="#000000" stroke-width="4"/>
+  <text x="40" y="224" font-family="system-ui,sans-serif" font-size="16" font-weight="600" fill="#000000">First of all, let me get something straight.</text>
+  <text x="40" y="256" font-family="system-ui,sans-serif" font-size="14" fill="#666666">English book memorization with audiobook sync</text>
+  <rect x="500" y="320" width="116" height="56" fill="#6366f1" stroke="#000000" stroke-width="4"/>
+  <text x="558" y="354" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" font-weight="900" fill="#ffffff">Book</text>
+</svg>
